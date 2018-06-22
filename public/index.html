@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Transcode DataLogger V1.0</title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+	.button {
+		position: relative;
+		background-color: #CCD1D1;
+		border: none;
+		font-size: 20px;
+		color: #FFFFFF;
+		padding: 14px;
+		width: 160px;
+		text-align: center;
+		-webkit-transition-duration: 0.4s; /* Safari */
+		transition-duration: 0.4s;
+		text-decoration: none;
+		overflow: hidden;
+		cursor: pointer;
+	}
+
+	.button:after {
+		content: "";
+		background: #90EE90;
+		display: block;
+		position: absolute;
+		padding-top: 300%;
+		padding-left: 350%;
+		margin-left: -20px!important;
+		margin-top: -120%;
+		opacity: 0;
+		transition: all 0.8s
+	}
+
+	.button:active:after {
+		padding: 0;
+		margin: 0;
+		opacity: 1;
+		transition: 0s
+	}
+	
+	.grid-container {
+	  display: inline-grid;
+	  grid-template-columns: auto auto auto auto auto auto;
+	  grid-gap: 5px;
+	  border: 3px solid black;
+	 text-align: center;
+	  padding: 5px;
+	}
+	.grid-item {
+	  border: 1px solid #2196F3;
+	  padding: 20px;
+	  font-size: 30px;
+	  text-align: center;
+	}
+	.item1 {
+	  grid-column: 1 / 4;
+	  text-align: center;
+		border: 1px solid green;
+	  padding: 1px;
+	   font-size: 10px;
+	  text-align: center;
+	}
+	.item2 {
+		grid-area: 1 / 4 / span 2 / span 3;
+	  text-align: center;
+		border: 1px solid blue;
+	  background-color: #5DADE2;
+	  padding: 5px;
+	  font-size: 20px;
+	  text-align: center;
+	}
+	.item3 {
+		grid-area: 3 / 4 / span 2 / span 3;
+	  text-align: center;
+		border: 1px solid blue;
+		background-color: #5DADE2;
+	  padding: 5px;
+	  font-size: 20px;
+	  text-align: center;
+	}
+	.item4 {
+		grid-area: 5 / 4 / span 2 / span 3;
+	  text-align: center;
+		border: 1px solid blue;
+		background-color: #5DADE2;
+	  padding: 5px;
+	  font-size: 20px;
+	  text-align: center;
+	}
+	.item5 {
+		grid-area: 7 / 4 / span 2 / span 3;
+	  text-align: center;
+		border: 1px solid blue;
+	  background-color: #5DADE2;
+	  padding: 5px;
+	  font-size: 20px;
+	  text-align: center;
+	}
+	</style>	
+  </head>
+  
+  
+  <body>
+    <h2>Transcode DataLogger V1.0</h2>
+	
+		<div class="grid-container">
+
+		<div class="item1">
+			<button class="button" id="button1">RELAY1 OFF</button>
+		</div>
+		
+		<div class="item2">
+			<br><p id="txt_v1ac">V1AC = -.-V</p>
+		</div>		
+		
+		<div class="item1">
+			<button class="button" id="button2">RELAY2 OFF</button>
+		</div>
+
+		<div class="item1">
+			<button class="button" id="button3">RELAY3 OFF</button>
+		</div>
+		
+		<div class="item3">
+			<br><p id="txt_v1dc">V1DC =-.-V</p>
+		</div>	
+		<div class="item1">
+			<button class="button" id="button4">RELAY4 OFF</button>
+		</div>	
+
+		<div class="item1">
+			<button class="button" id="button5">RELAY5 OFF</button>
+		</div>
+		
+		<div class="item4">
+			<br><p id="txt_v2dc">V2DC =-.-V</p>
+		</div>	
+		<div class="item1">
+			<button class="button" id="button6">RELAY6 OFF</button>
+		</div>	
+		
+		<div class="item1">
+			<button class="button" id="button7">RELAY7 OFF</button>
+		</div>
+		
+		<div class="item5">
+			<br><p id="txt_t1">T1 = -.-C</p>
+		</div>	
+		<div class="item1">
+			<button class="button" id="button8">RELAY8 OFF</button>
+		</div>	
+		
+
+
+		</div>
+	</div>
+
+  </body>
+  <script src="client.js"></script>
+</html>
