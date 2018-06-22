@@ -5,6 +5,8 @@
   "main": "tc-gps_decode.js",
   "dependencies": {
     "express": "^4.16.3",
+    "influx": "^5.0.7",
+    "influxdb-nodejs": "^2.7.7",
     "node-constants": "0.0.2",
     "private-parts": "^0.4.1"
   },

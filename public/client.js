@@ -1,6 +1,14 @@
 console.log('Client-side code running');
 
-var x = 1234;
+function isEmptyObject(obj) {
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function post_json(path, body) {
 		fetch('/relay_ctrl', { 
 								method: 'POST',
@@ -67,59 +75,52 @@ function post_json(path, body) {
 		.then(json => console.log(json));	
 }
 
-function isEmptyObject(obj) {
-	for (var key in obj) {
-	  if (Object.prototype.hasOwnProperty.call(obj, key)) {
-		return false;
-	  }
-	}
-	return true;
-  }
+
 
 setInterval(function() {
-
-
-	var body = { UUID: x };
-	console.log(body.UUID)
+	
+	var body = { UUID: 12345678 };
 	
 	fetch('/page_update', {
 		method: 'POST',
 		body:    JSON.stringify(body),
 		headers: { 'Content-Type': 'application/json' },
 		})
-		
 	.then(res => res.json())
-	
 	.then(function handleJson (DLOGV1) {
-
-		if(!isEmptyObject(DLOGV1))
-		{
-		document.getElementById('button1').innerHTML = "RELAY1 " + ((DLOGV1.RELAY.CH0==1)?"ON":"OFF");
-		document.getElementById('button2').innerHTML = "RELAY2 " + ((DLOGV1.RELAY.CH1==1)?"ON":"OFF");
-		document.getElementById('button3').innerHTML = "RELAY3 " + ((DLOGV1.RELAY.CH2==1)?"ON":"OFF");
-		document.getElementById('button4').innerHTML = "RELAY4 " + ((DLOGV1.RELAY.CH3==1)?"ON":"OFF");	
-		document.getElementById('button5').innerHTML = "RELAY5 " + ((DLOGV1.RELAY.CH4==1)?"ON":"OFF");
-		document.getElementById('button6').innerHTML = "RELAY6 " + ((DLOGV1.RELAY.CH5==1)?"ON":"OFF");
-		document.getElementById('button7').innerHTML = "RELAY7 " + ((DLOGV1.RELAY.CH6==1)?"ON":"OFF");
-		document.getElementById('button8').innerHTML = "RELAY8 " + ((DLOGV1.RELAY.CH7==1)?"ON":"OFF");
-	
-		document.getElementById('button1').style.backgroundColor = ((DLOGV1.RELAY.CH0==1)?"#27AE60":"#CCD1D1");
-		document.getElementById('button2').style.backgroundColor = ((DLOGV1.RELAY.CH1==1)?"#27AE60":"#CCD1D1");
-		document.getElementById('button3').style.backgroundColor = ((DLOGV1.RELAY.CH2==1)?"#27AE60":"#CCD1D1");
-		document.getElementById('button4').style.backgroundColor = ((DLOGV1.RELAY.CH3==1)?"#27AE60":"#CCD1D1");	
-		document.getElementById('button5').style.backgroundColor = ((DLOGV1.RELAY.CH4==1)?"#27AE60":"#CCD1D1");
-		document.getElementById('button6').style.backgroundColor = ((DLOGV1.RELAY.CH5==1)?"#27AE60":"#CCD1D1");
-		document.getElementById('button7').style.backgroundColor = ((DLOGV1.RELAY.CH6==1)?"#27AE60":"#CCD1D1");
-		document.getElementById('button8').style.backgroundColor = ((DLOGV1.RELAY.CH7==1)?"#27AE60":"#CCD1D1");
 		
-		document.getElementById('txt_v1ac').innerHTML = `V1AC = ${DLOGV1.VAC.CH0} V`;
-		document.getElementById('txt_v1dc').innerHTML = `V1DC = ${DLOGV1.VDC.CH0} V`;
-		document.getElementById('txt_v2dc').innerHTML = `V2DC = ${DLOGV1.VDC.CH1} V`;
-		document.getElementById('txt_t1').innerHTML   = `T1 = ${DLOGV1.TEMP.CH0} C`;
-	
-	}
-});
+		//console.log(DLOGV1);
+		
+		if (!isEmptyObject(DLOGV1)) {
+		
+			document.getElementById('button1').innerHTML = "RELAY1 " + ((DLOGV1.RELAY.CH0==1)?"ON":"OFF");
+			document.getElementById('button2').innerHTML = "RELAY2 " + ((DLOGV1.RELAY.CH1==1)?"ON":"OFF");
+			document.getElementById('button3').innerHTML = "RELAY3 " + ((DLOGV1.RELAY.CH2==1)?"ON":"OFF");
+			document.getElementById('button4').innerHTML = "RELAY4 " + ((DLOGV1.RELAY.CH3==1)?"ON":"OFF");	
+			document.getElementById('button5').innerHTML = "RELAY5 " + ((DLOGV1.RELAY.CH4==1)?"ON":"OFF");
+			document.getElementById('button6').innerHTML = "RELAY6 " + ((DLOGV1.RELAY.CH5==1)?"ON":"OFF");
+			document.getElementById('button7').innerHTML = "RELAY7 " + ((DLOGV1.RELAY.CH6==1)?"ON":"OFF");
+			document.getElementById('button8').innerHTML = "RELAY8 " + ((DLOGV1.RELAY.CH7==1)?"ON":"OFF");
+		
 
+			document.getElementById('button1').style.backgroundColor = ((DLOGV1.RELAY.CH0==1)?"#27AE60":"#CCD1D1");
+			document.getElementById('button2').style.backgroundColor = ((DLOGV1.RELAY.CH1==1)?"#27AE60":"#CCD1D1");
+			document.getElementById('button3').style.backgroundColor = ((DLOGV1.RELAY.CH2==1)?"#27AE60":"#CCD1D1");
+			document.getElementById('button4').style.backgroundColor = ((DLOGV1.RELAY.CH3==1)?"#27AE60":"#CCD1D1");	
+			document.getElementById('button5').style.backgroundColor = ((DLOGV1.RELAY.CH4==1)?"#27AE60":"#CCD1D1");
+			document.getElementById('button6').style.backgroundColor = ((DLOGV1.RELAY.CH5==1)?"#27AE60":"#CCD1D1");
+			document.getElementById('button7').style.backgroundColor = ((DLOGV1.RELAY.CH6==1)?"#27AE60":"#CCD1D1");
+			document.getElementById('button8').style.backgroundColor = ((DLOGV1.RELAY.CH7==1)?"#27AE60":"#CCD1D1");
+			
+			document.getElementById('txt_v1ac').innerHTML = `V1AC = ${DLOGV1.VAC.CH0} V`;
+			document.getElementById('txt_v1dc').innerHTML = `V1DC = ${DLOGV1.VDC.CH0} V`;
+			document.getElementById('txt_v2dc').innerHTML = `V2DC = ${DLOGV1.VDC.CH1} V`;
+			document.getElementById('txt_t1').innerHTML   = `T1 = ${DLOGV1.TEMP.CH0} C`;
+		
+		}
+	  
+    })
+	.catch(function(ex) {
+		console.log('parsing failed', ex)
+	});		
 }, 500);
-
-
