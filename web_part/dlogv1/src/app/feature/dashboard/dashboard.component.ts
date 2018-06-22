@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, OnChanges, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { ServiceService } from '../../service.service'
 import { DashboardService } from './dashboard.service';
@@ -17,43 +17,26 @@ import { FUNCTION_TYPE } from '@angular/compiler/src/output/output_ast';
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
-  @Input()
-  intv: any;
-
-  temp: number;
-  warning_text: string;
-  status_show: string;
-  dlog_show: string;
-
+  intv_pooling: any;
+  intv_graph_update: any;
   constructor(private service: ServiceService) {
-
-
-  }
-  ngOnChange() {
-    console.log("ON cHANGE")
 
   }
 
   ngOnInit() {
     /* ################################################### */
     var ip = 'http://13.67.73.17:80'
-   /*  var ip = 'http://192.168.64.1:80' */
-     /* var ip = 'http://192.168.64.1' */
-
+    /*  var ip = 'http://192.168.64.1:80' */
+    /* var ip = 'http://192.168.64.1' */
     /* ################################################### */
-  
-    
+
     var btn_cd_max = 20  // 10 sec
     var global_index = 0;
     var predata = []
     var predata_vdc = []
+    var predata_tmpbar = [30]
     //default value
-    this.temp = 60;
-    this.status_show = "OFFLINE";  //show
-    this.dlog_show = "dlog1"
 
-
-    var status = "ONLINE"
     var device_id = 12345678
     var device_uuid = []
 
@@ -77,18 +60,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     //** CHANGE DEVICE ( UUID ) ***
     //***************************** 
     var device_select = 'dlog1'
-    /* device_select = (<HTMLInputElement>document.getElementById('selector1')).value; */
 
     const selector1 = <HTMLInputElement>document.getElementById('selector1');
     selector1.addEventListener('change', function (e) {
       console.log('selector1 was changed');
 
-      status = "ONLINE"
       switch (selector1.value) {
-        case '0': device_id = /* 12345678; break; */device_uuid[0]; global_index = 0; break;
-        case '1': device_id =/*  0x00007048860DDF79; break; */device_uuid[1]; global_index = 1; break;
-        case '2': device_id = /* 33333333; break; */device_uuid[2]; global_index = 2; break;
-        case '3': device_id =/*  44444444; break; */device_uuid[3]; global_index = 3; break;
+        case '0': device_id = device_uuid[0]; global_index = 0; break;
+        case '1': device_id = device_uuid[1]; global_index = 1; break;
+        case '2': device_id = device_uuid[2]; global_index = 2; break;
+        case '3': device_id = device_uuid[3]; global_index = 3; break;
       }
       //re-create graph
       fetch(ip + '/init_temp',
@@ -143,10 +124,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     });
 
-    const button_id = [];
-
-    const warning_text = (<HTMLInputElement>document.getElementById('warning_text'))
-
     const r1 = (<HTMLInputElement>document.getElementById('r1'));
     const r2 = (<HTMLInputElement>document.getElementById('r2'));
     const r3 = (<HTMLInputElement>document.getElementById('r3'));
@@ -166,38 +143,50 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const r_on = (<HTMLInputElement>document.getElementById('r_on'));
     const r_off = (<HTMLInputElement>document.getElementById('r_off'));
     const r_rst = (<HTMLInputElement>document.getElementById('r_rst'));
-    
-    button_id.push(r1, r2, r3, r4, r5, r6, r7, r8, rst1, rst2, rst3, rst4, rst5, rst6, rst7, rst8, r_on, r_off,r_rst)
+    const warning_text = (<HTMLInputElement>document.getElementById('warning_text'))
 
+    const tmpbar_test = (<HTMLInputElement>document.getElementById('tmpbar_test'));
+
+    tmpbar_test.addEventListener('click', function (e) {
+      chart_tmpbar.data.datasets[0].data[0]++;
+      chart_tmpbar.update();
+
+      console.log('up');
+    });
+
+
+    const button_id = [];
+    const buttonAllR = [];
+
+    button_id.push(r1, r2, r3, r4, r5, r6, r7, r8, rst1, rst2, rst3, rst4, rst5, rst6, rst7, rst8, r_on, r_off, r_rst)
+    buttonAllR.push(r1, r2, r3, r4, r5, r6, r7, r8)
     function disbleButton() {
       button_id.forEach((btn) => {
         btn.disabled = true;
-        warning_text.innerText ="Loading...";
+        warning_text.innerText = "Loading...";
       })
     }
     function enableButton() {
 
       button_id.forEach((btn) => {
         btn.disabled = false;
-        warning_text.innerText ="";
+        warning_text.innerText = "";
       })
     }
-    function resetChecking(r_btn)
-    {
-      if(r_btn.className== "button off")
-      {
-        warning_text.innerText ="Reset denied";
-      return 1;
-    }
-      else if(r_btn.className== "button on")
-      return 0;
+    function resetChecking(r_btn) {
+      if (r_btn.className == "button off") {
+        warning_text.innerText = "Reset denied";
+        return 1;
+      }
+      else if (r_btn.className == "button on")
+        return 0;
     }
 
-   /*  r1.addEventListener('click', function (e) {
-      disbleButton()
-      console.log('r1 was clicked');
-      post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 0, MODE: 0 });
-    }); */
+    /*  r1.addEventListener('click', function (e) {
+       disbleButton()
+       console.log('r1 was clicked');
+       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 0, MODE: 0 });
+     }); */
 
     r2.addEventListener('click', function (e) {
       disbleButton()
@@ -251,59 +240,58 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }); */
 
     rst2.addEventListener('click', function (e) {
-      if(!resetChecking(r2))
-      {
-      disbleButton()
-      console.log('rst2 was clicked');
-      post_json(ip + '/relay_rst', { UUID: device_id, CH: 1 ,MODE:0});
+      if (!resetChecking(r2)) {
+        disbleButton()
+        console.log('rst2 was clicked');
+        post_json(ip + '/relay_rst', { UUID: device_id, CH: 1, MODE: 0 });
       }
     });
 
     rst3.addEventListener('click', function (e) {
-      if(!resetChecking(r3)){
-      disbleButton()
-      console.log('rst3 was clicked');
-      post_json(ip + '/relay_rst', { UUID: device_id, CH: 2 ,MODE:0});
-    }
+      if (!resetChecking(r3)) {
+        disbleButton()
+        console.log('rst3 was clicked');
+        post_json(ip + '/relay_rst', { UUID: device_id, CH: 2, MODE: 0 });
+      }
     });
 
     rst4.addEventListener('click', function (e) {
-      if(!resetChecking(r4)){
-      disbleButton()
-      console.log('rst4 was clicked');
-      post_json(ip + '/relay_rst', { UUID: device_id, CH: 3 ,MODE:0});
+      if (!resetChecking(r4)) {
+        disbleButton()
+        console.log('rst4 was clicked');
+        post_json(ip + '/relay_rst', { UUID: device_id, CH: 3, MODE: 0 });
       }
     });
 
     rst5.addEventListener('click', function (e) {
-      if(!resetChecking(r5)){
-      disbleButton()
-      console.log('rst5 was clicked');
-      post_json(ip + '/relay_rst', { UUID: device_id, CH: 4 ,MODE:0});
+      if (!resetChecking(r5)) {
+        disbleButton()
+        console.log('rst5 was clicked');
+        post_json(ip + '/relay_rst', { UUID: device_id, CH: 4, MODE: 0 });
       }
     });
 
     rst6.addEventListener('click', function (e) {
-      if(!resetChecking(r6)){
-      disbleButton()
-      console.log('rst6 was clicked');
-      post_json(ip + '/relay_rst', { UUID: device_id, CH: 5 ,MODE:0});
+      if (!resetChecking(r6)) {
+        disbleButton()
+        console.log('rst6 was clicked');
+        post_json(ip + '/relay_rst', { UUID: device_id, CH: 5, MODE: 0 });
       }
     });
 
     rst7.addEventListener('click', function (e) {
-      if(!resetChecking(r7)){
-      disbleButton()
-      console.log('rst7 was clicked');
-      post_json(ip + '/relay_rst', { UUID: device_id, CH: 6 ,MODE:0});
+      if (!resetChecking(r7)) {
+        disbleButton()
+        console.log('rst7 was clicked');
+        post_json(ip + '/relay_rst', { UUID: device_id, CH: 6, MODE: 0 });
       }
     });
 
     rst8.addEventListener('click', function (e) {
-      if(!resetChecking(r8)){
-      disbleButton()
-      console.log('rst8 was clicked');
-      post_json(ip + '/relay_rst', { UUID: device_id, CH: 7 ,MODE:0});
+      if (!resetChecking(r8)) {
+        disbleButton()
+        console.log('rst8 was clicked');
+        post_json(ip + '/relay_rst', { UUID: device_id, CH: 7, MODE: 0 });
       }
     });
 
@@ -323,33 +311,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
       console.log('r_off was clicked');
       post_json(ip + '/relay_rst', { UUID: device_id, CH: 0x1, MODE: 1 });
     });
-   
-    var btn_cd =0;
-    this.intv = setInterval(function () {
 
-      if(btn_cd >= btn_cd_max)
-      {
+    var btn_cd = 0;
+    this.intv_pooling = setInterval(function () {
+      var body = { UUID: device_id };
+
+      // timeout >> = 10 s (btn_cd_max)
+      if (btn_cd >= btn_cd_max) {
         enableButton();
-        btn_cd =0;
+        btn_cd = 0;
       }
+
+      scaleBar(chart_tmpbar);
 
       fetch(ip + '/get_id', {
       })
         .then(res => res.json())
         .then(function handleJson(id_login) {
           device_uuid = []
-          /*      console.log(id_login) */
-
-          id_login.forEach(id => {
-
-
-            device_uuid.push(id)
-          })
+          id_login.forEach(id => { device_uuid.push(id) })
           device_id = device_uuid[global_index]
-
         })
-
-      var body = { UUID: device_id };
 
       fetch(ip + '/page_update', {
         method: 'POST',
@@ -358,68 +340,52 @@ export class DashboardComponent implements OnInit, OnDestroy {
       })
         .then(res => res.json())
         .then(function handleJson(DLOGV1) {
-
-        
+          
 
           if (!isEmptyObject(DLOGV1) && !0) {
             console.log(DLOGV1.BTN.CH0)
-            
-            if(DLOGV1.BTN.CH0==true)
-            enableButton();
 
-            document.getElementById('r1').style.backgroundColor = ((DLOGV1.RELAY.CH0 == 1) ? "green" : "red");
-            document.getElementById('r2').style.backgroundColor = ((DLOGV1.RELAY.CH1 == 1) ? "green" : "red");
-            document.getElementById('r3').style.backgroundColor = ((DLOGV1.RELAY.CH2 == 1) ? "green" : "red");
-            document.getElementById('r4').style.backgroundColor = ((DLOGV1.RELAY.CH3 == 1) ? "green" : "red");
-            document.getElementById('r5').style.backgroundColor = ((DLOGV1.RELAY.CH4 == 1) ? "green" : "red");
-            document.getElementById('r6').style.backgroundColor = ((DLOGV1.RELAY.CH5 == 1) ? "green" : "red");
-            document.getElementById('r7').style.backgroundColor = ((DLOGV1.RELAY.CH6 == 1) ? "green" : "red");
-            document.getElementById('r8').style.backgroundColor = ((DLOGV1.RELAY.CH7 == 1) ? "green" : "red");
+            const DLOGAllRelay = [
+              DLOGV1.RELAY.CH0,
+              DLOGV1.RELAY.CH1,
+              DLOGV1.RELAY.CH2,
+              DLOGV1.RELAY.CH3,
+              DLOGV1.RELAY.CH4,
+              DLOGV1.RELAY.CH5,
+              DLOGV1.RELAY.CH6,
+              DLOGV1.RELAY.CH7
+            ]
 
-            /* r1.disabled=false; */
-            document.getElementById('r1').className = ((DLOGV1.RELAY.CH0 == 1) ? "button on" : "button off");
-            document.getElementById('r2').className = ((DLOGV1.RELAY.CH1 == 1) ? "button on" : "button off");
-            document.getElementById('r3').className = ((DLOGV1.RELAY.CH2 == 1) ? "button on" : "button off");
-            document.getElementById('r4').className = ((DLOGV1.RELAY.CH3 == 1) ? "button on" : "button off");
-            document.getElementById('r5').className = ((DLOGV1.RELAY.CH4 == 1) ? "button on" : "button off");
-            document.getElementById('r6').className = ((DLOGV1.RELAY.CH5 == 1) ? "button on" : "button off");
-            document.getElementById('r7').className = ((DLOGV1.RELAY.CH6 == 1) ? "button on" : "button off");
-            document.getElementById('r8').className = ((DLOGV1.RELAY.CH7 == 1) ? "button on" : "button off");
+
+            if (DLOGV1.BTN.CH0 == true)
+              enableButton();
+
+            var i = 0;
+            buttonAllR.forEach((r) => {
+              r.style.backgroundColor = ((DLOGAllRelay[i] == 1) ? "green" : "red");
+              r.className = ((DLOGAllRelay[i] == 1) ? "button on" : "button off");
+              i++
+            })
 
             document.getElementById('vdc1').innerText = "VDC1 : " + DLOGV1.VDC.CH0 + "V";
             document.getElementById('vdc2').innerText = "VDC2 : " + DLOGV1.VDC.CH1 + "V";
             document.getElementById('vac1').innerText = "VAC1 : " + DLOGV1.VAC.CH0 + "V";
 
             document.getElementById('temp').innerText = DLOGV1.TEMP.CH0 + "C";
-            
+
           }
           else {
 
-            document.getElementById('r1').style.backgroundColor = "black";
-            document.getElementById('r2').style.backgroundColor = "black";
-            document.getElementById('r3').style.backgroundColor = "black";
-            document.getElementById('r4').style.backgroundColor = "black";
-            document.getElementById('r5').style.backgroundColor = "black";
-            document.getElementById('r6').style.backgroundColor = "black";
-            document.getElementById('r7').style.backgroundColor = "black";
-            document.getElementById('r8').style.backgroundColor = "black";
-
-            document.getElementById('r1').className = "button null";
-            document.getElementById('r2').className = "button null";
-            document.getElementById('r3').className = "button null";
-            document.getElementById('r4').className = "button null";
-            document.getElementById('r5').className = "button null";
-            document.getElementById('r6').className = "button null";
-            document.getElementById('r7').className = "button null";
-            document.getElementById('r8').className = "button null";
+            buttonAllR.forEach((r) => {
+              r.style.backgroundColor = "black";
+              r.className = "button null";
+            })
 
             document.getElementById('vdc1').innerText = "VDC1" + "-V";
             document.getElementById('vdc2').innerText = "VDC2" + "-V";
             document.getElementById('vac1').innerText = "VAC" + "-V";
 
             document.getElementById('temp').innerText = "-C";
-
-
 
           }
 
@@ -451,9 +417,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
               addData(chart, 0, db_id[i].mean_temp)
               addData(chart_tmp, 0, db_id[i].mean_temp)
             }
-
           } else {
-
             predata = [];
             for (i = 0; i < 5; i++) {
               removeData(chart)
@@ -462,23 +426,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
           }
         })
       //-----------------------
-
-      fetch(ip + '/init_vdc',
-        {
-          method: 'POST',
-          body: JSON.stringify({ UUID: device_id }),
-          headers: { 'Content-Type': 'application/json' },
-        })
+      fetch(ip + '/init_vdc', {
+        method: 'POST',
+        body: JSON.stringify({ UUID: device_id }),
+        headers: { 'Content-Type': 'application/json' },
+      })
         .then(res => res.json())
         .then(function handleJson(db_id) {
           console.log(db_id)
           if (!isEmptyObject(db_id)) {
-
             var i;
             for (i = 0; i < 5; i++) {
               addData(chart_vdc, 0, db_id[i].mean_volt_dc_1)
             }
-
           }
           else {
             predata_vdc = [];
@@ -491,8 +451,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     }, 800)
 
+    var count_update = 0;
     //temp graph update
-    setInterval(function () {
+    this.intv_graph_update = setInterval(function () {
+
+      count_update++;
 
       console.log("graph_update")
       console.log("predata" + predata);
@@ -509,16 +472,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
         .then(function (data) {
           // not include []
           if (!isEmptyObject(data)) {
-            addData(chart, 0, data[0].mean_temp);
-            removeData(chart);
+
+            if (count_update == 6) // 60sec
+            {
+              addData(chart, 0, data[0].mean_temp);
+              removeData(chart);
+              count_update = 0;
+            }
             addData(chart_tmp, 0, data[0].mean_temp);
             removeData(chart_tmp);
-/*       
-            chart_tmp.options.scales.yAxes[0].ticks.min = data[0].mean_temp-0.5
-            chart_tmp.options.scales.yAxes[0].ticks.max = data[0].mean_temp+0.5
-            chart.update(); */
+            /*       
+                        chart_tmp.options.scales.yAxes[0].ticks.min = data[0].mean_temp-0.5
+                        chart_tmp.options.scales.yAxes[0].ticks.max = data[0].mean_temp+0.5
+                        chart_tmp.update(); */
           }
-
 
         });
 
@@ -555,10 +522,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       type: 'line',
       // The data for our dataset
       data: {
-        labels: ["-5m", "-4m", "-3m", "-2m", "-1m",],
+        labels: ["-4m", "-3m", "-2m", "-1m", "now",],
         datasets: [{
-          label: "TEMPERATURE",
-          backgroundColor:'orange',
+          label: "TEMP(1m)",
+          backgroundColor: 'orange',
           borderColor: 'red',
           data: predata,
           spanGaps: false,
@@ -596,8 +563,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           animationDuration: 0, // duration of animations when hovering an item
         },
         responsiveAnimationDuration: 0, // animation duration after a resize
-
-
       }
     });
 
@@ -611,10 +576,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
       type: 'line',
       // The data for our dataset
       data: {
-        labels: ["-5m", "-4m", "-3m", "-2m", "-1m",],
+        labels: ["-40s", "-30s", "-20s", "-10s", "now",],
         datasets: [{
-          label: "TEMP",
-          backgroundColor: 'orange' ,
+          label: "TEMP(10s)",
+          backgroundColor: 'orange',
           borderColor: 'red',
           data: predata,
           spanGaps: false,
@@ -622,7 +587,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
         }]
       },
-
 
       // Configuration options go here
       options: {
@@ -637,13 +601,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
           xAxes: [{
             scaleLabel: {
               display: true,
-              labelString: "Time in Minute",
+              labelString: "Time in sec",
               fontColor: "black"
             }
           }]
-
         },
-
       }
     });
 
@@ -683,6 +645,54 @@ export class DashboardComponent implements OnInit, OnDestroy {
             scaleLabel: {
               display: true,
               labelString: "Time in Minute",
+              fontColor: "black"
+            }
+          }]
+
+        },
+
+      }
+    });
+
+
+    //-------------------------------------
+    //** tempbar */
+    var canvas = <HTMLCanvasElement>document.getElementById('Chart_tempbar');
+
+    var ctx = canvas.getContext('2d');
+    /* var predata = [24.2, 24.1, 26.0, 25.2, 25.5]; */
+    /* var predata_vdc = [12.9, 13.0, 12.6, 12.4, 13] */
+    var chart_tmpbar = new Chart(ctx, {
+      type: 'bar',
+      // The data for our dataset
+      data: {
+        labels: ["NOW"],
+        datasets: [{
+          label: "temp",
+          /* backgroundColor: 'orange' ,*/
+          /*  borderColor: 'black', */
+          /*  backgroundColor: 'green', */
+          data: predata_tmpbar,
+          spanGaps: false,
+          lineTension: 0,
+
+        }]
+      },
+
+      // Configuration options go here
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          yAxes: [{
+            ticks: {
+              min: 20,
+              max: 60,
+            },
+          }],
+          xAxes: [{
+            scaleLabel: {
+              display: true,
               fontColor: "black"
             }
           }]
@@ -735,26 +745,34 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
       chart.update();
     }
+    function scaleBar(chart_tmpbar) {
+      if (chart_tmpbar.data.datasets[0].data[0] >= 50) {
+        chart_tmpbar.data.datasets[0].backgroundColor = 'red';
+      }
+      else if (chart_tmpbar.data.datasets[0].data[0] >= 40) {
+        chart_tmpbar.data.datasets[0].backgroundColor = 'orange';
+      }
+      else if (chart_tmpbar.data.datasets[0].data[0] >= 30) {
+        chart_tmpbar.data.datasets[0].backgroundColor = 'yellow';
+      }
+      else
+        chart_tmpbar.data.datasets[0].backgroundColor = 'green';
 
-
-
+      chart_tmpbar.update();
+    }
   }
   ngOnDestroy() {
-    if (this.intv)
-      clearInterval(this.intv);
+    if (this.intv_pooling)
+      clearInterval(this.intv_pooling);
+    if (this.intv_graph_update)
+      clearInterval(this.intv_graph_update);
 
   }
 
-
+  a
 
   /* ********circle graph********* */
   canvas: any;
   ctx: any;
-
-  ngAfterViewInit() {
-
-
-  }
-
 }
 

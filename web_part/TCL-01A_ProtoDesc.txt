@@ -1,0 +1,569 @@
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+                                                               [SMS]
+-------------------------------------------------------------------------------------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[C00: SERVER CONFIGULATION]
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+"C00:{CENTER NUMBER},{APN},{APN LOG-IN NAME},{APN LOG-IN PASSWORD},{SERVER DOMAIN/SERVER IP},{SERVER PORT NUMBER},{SERVER PROTOCOL UDP/TCP},{SERVER LOG-IN NAME},{SERVER LOG-IN PASSWORD},{SEND TIME INTERVAL},{NEW UUID},{APPLICATION PROTOCOL};"
+
+Example : 
+
+[SET ANP AND SERVER PARAMETER]
+"C00:,INTERNET,,,11.123.45.67,8090,,,,,,;"
+
+{APN} = INTERNET
+{SERVER DOMAIN/SERVER IP} = 11.123.45.67
+{SERVER PORT NUMBER} = 8090
+
+[SET SEND TIME INTERVAL ONLY]
+"C00:,,,,,,,,,30,,;"
+
+{SEND TIME INTERVAL} = 10 SEC.  ;MIN = 1SEC.
+
+[SET NEW UUID ONLY]
+"C00:,,,,,,,,,,1234567890ABCDEF,;"
+
+{NEW UUID} = 1234567890ABCDEF  //ASCII HEX 64 BITS ONLY
+
+[SET ALL PARAMETER]
+"C00:0821234567,INTERNET,TEST,N123456789,11.123.45.67,8090,TCP,TRANSCODE,N987654321,30,12	34567890ABCDEF,A;"
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[C01: ALERT SMS NUMBER CONFIGULATION]
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C01:{BIND FLAG1}:{SMS NUMBER1},{BIND FLAG2}:{SMS NUMBER2},...,{BIND FLAGn}:{SMS NUMBERn};
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+                                                               [SERVER SIDE]
+-------------------------------------------------------------------------------------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[MAIN PROTOCOL PACKET]
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+"<<{UUID},{PROTOCOL_VER};{TAG1};\{TAG2};{TAG3;...;{TAGn};\0x17\r\n"
+
+Example : sprintf(&buffer[0], "<<01,1234567890ABCDEF;G00:2017-08-13T12:48:13.000Z,A,13.293330N,100.941625E,1,357.00,A,3,0.99,0.62,0.78;E00:0000000000000000;S01:1,0;S02:0,0;S03:0,0,0,0;S04:0;S05:1,0;\0x17\r\n");
+
+*****************************************************
+[P04: REMOTE BUZZER CONTROL COMMAND]
+*****************************************************
+
+"P04:{remote_buzzer_on},{buzzer_state},{buzzer_sound_type},{buzzer_repeat};"
+
+{remote_buzzer_on}  =  0 - 2   		;enable remote buzzer control
+{buzzer_state}      =  0 or 1   	;enable buzzer on/off
+{buzzer_sound_type} =  0 -> 9  		;select buzzer sound type
+{buzzer_repeat}			=  0 -> 255  	;Number of repeat buzzer sound type, 255 = infinity, {0,1= 1 times}
+
+Example :  sprintf(&buffer[0], "P04:1,1,0,255;\r\n");
+****************************************************
+[P06:CAN BUS COMMAND]
+*****************************************************
+
+"P06:F,{RCV_FILTER_NUMBER},{RCV_FILTER_MODE},{RCV_FILTER_FORMAT},{RCV_FILTER_ID};"
+{RCV_FILTER_NUMBER} = 0-D   	(ASCII)	; 
+{RCV_FILTER_MODE} 	= 0 or 1 	(ASCII)	; 0 = FILTER_MASK_MODE; 1 = FILTER_LIST_MODE
+{RCV_FILTER_FORMAT} = 0 or 1 	(ASCII)	; 0 = STANDARD_FORMAT ; 1 = EXTENDED_FORMAT
+{RCV_FILTER_ID}   	= 0-FFFF   	(ASCII)	; 
+
+"P06:W,{FRAME_ID},{FORMAT},{TYPE},{LENGTH},{DATA};\r\n"
+{FRAME_ID} = 0-FFFF   	(ASCII)	; 
+{FORMAT}   = 0 or 1		(ASCII) ;0 = STANDARD_FORMAT ; 1 = EXTENDED_FORMAT
+{TYPE}     = 0 or 1		(ASCII) ;0 = DATA_FRAME ; 1 = REMOTE_FRAME
+{LENGTH}   = 0-8   		(ASCII)	; 
+{DATA}     = byte array (HEX)   ; 
+
+"P06:C,{COMMUNICATOIN_MODE};\r\n"
+{COMMUNICATOIN_MODE} = 0-1 (ASCII); 0 = request respond mode, 1 = free runing mode 
+
+Example :  
+sprintf(&buffer[0], "P06:F,1,{RCV_FILTER_ID};");
+
+****************************************************
+[P0A:SPI1 COMMAND]
+*****************************************************
+
+"P0A:{LENGTH},{DATA};"
+
+{length}  =  0-3FF   	(ASCII)	; number of data from spi1 reader 
+{data}    =  byte array (HEX)   ; data from spi1 reader
+
+Example :  
+sprintf(&buffer[0], "P0A:17, SEND DATA TO TC-GW-001;\r\n");
+
+****************************************************
+[P0B:SPI2 COMMAND]
+*****************************************************
+
+"P0B:{LENGTH},{DATA};"
+
+{length}  =  0-3FF   	(ASCII)	; number of data from spi1 reader 
+{data}    =  byte array 	(HEX)   ; data from spi1 reader
+
+Example :  
+sprintf(&buffer[0], "P0B:17, SEND DATA TO TC-GW-001;\r\n");
+
+****************************************************
+[P0C:SDCARD COMMAND]
+*****************************************************
+
+#List File
+"P0C:L,{PARAMETER},{PATH};"
+
+#Delete File
+"P0C:D,{PARAMETER},{PATH & FILE NAME};"
+
+#Make Directory
+"P0C:M,{PARAMETER},{PATH};"
+
+#Read File
+"P0C:R,{PARAMETER},{PATH & FILE NAME};"
+{PARAMETER}
+"l"	 		The read operation continues until a '\n' is stored
+"n"	 		Read all byte(hex) n byte in the file.
+
+
+#Open&Write
+"P0C:W,{PARAMETER},{PATH & FILE NAME},{DATA LEGTH},{DATA};\0x17\r\n"
+
+{Open&Write:PARAMETER}
+"r+"	FA_READ | FA_WRITE
+"w"		FA_CREATE_ALWAYS | FA_WRITE
+"w+"	FA_CREATE_ALWAYS | FA_WRITE | FA_READ
+"a"		FA_OPEN_APPEND | FA_WRITE
+"a+"	FA_OPEN_APPEND | FA_WRITE | FA_READ
+"x"		FA_CREATE_NEW | FA_WRITE
+"x+"	FA_CREATE_NEW | FA_WRITE | FA_READ
+
+FA_WRITE			Specifies write access to the object. Data can be written to the file. Combine with FA_READ for read-write access.
+FA_OPEN_EXISTING	Opens the file. The function fails if the file is not existing. (Default)
+FA_CREATE_NEW		Creates a new file. The function fails with FR_EXIST if the file is existing.
+FA_CREATE_ALWAYS	Creates a new file. If the file is existing, it will be truncated and overwritten.
+FA_OPEN_ALWAYS		Opens the file if it is existing. If not, a new file will be created.
+FA_OPEN_APPEND		Same as FA_OPEN_ALWAYS except the read/write pointer is set end of the file.
+
+#Close File
+"P0C:E,{PARAMETER},{PATH & FILE NAME};"
+
+
+[CONFIG MODE]
+{FILE NAME}  		=  PIC1234-TEST.TXT   	(ASCII)	;
+{TOTOL PACKET}  =  0-FFFF   	      		(ASCII)	;
+{PACKET SIZE}  	=  0-3FF   							(ASCII)	; number of byte per 1 packet
+{FILE SIZE}    	=  0-FFFFFFFF   				(ASCII)	;
+
+[WRITE MODE]
+{PACKET NUMBER} = 0-FFFF   							(ASCII)	;
+{DATA LEGTH} 	= 0-3FF   							(ASCII)	;
+{DATA}			= byte array 					  (HEX)   ; data in {FILE NAME}
+
+[READ MODE]
+{PACKET NUMBER} = 0-FFFF   							(ASCII)	;
+{DATA LEGTH} 	= 0-3FF   							(ASCII)	;
+{DATA}			= byte array 					  (HEX)   ; data in {FILE NAME}
+
+Example :  
+sprintf(&buffer[0], "P0C:PIC1.JPG, 17, SEND DATA TO TC-GW-001;\r\n");
+
+****************************************************
+[P0D:I2C COMMAND]
+*****************************************************
+
+"P0D:R,{I2C ADDRESS},{MEMORY ADDRESS};\r\n"
+"P0D:W,{I2C ADDRESS},{MEMORY ADDRESS},{LENGTH},{DATA};"
+[WRITE MODE]		
+{I2C_ADDRESS}		 = 0-FFFF   					(ASCII)	;
+{MEMORY_ADDRESS} = 0-FFFFFFFF   	(ASCII)	;
+{LENGTH} 				 = 0-3FF   					(ASCII)	;
+{DATA} 					 = byte array 					(HEX)   ;
+
+Example :  
+sprintf(&buffer[0], "P0D:W,2,1,2,AB;\r\n");
+
+****************************************************
+[P0E:LPUART1_TRNSPRNT COMMAND]
+*****************************************************
+
+"P0E:{LENGTH},{DATA};\r\n"
+
+{length}  =  0-3FF   		(ASCII)	; number of data from LPUART1_TRNSPRNT
+{data}    =  byte array 	(HEX)   ; data from LPUART1_TRNSPRNT
+
+Example :  
+sprintf(&buffer[0], "P0E:17, SEND DATA TO TC-GW-001;");
+
+****************************************************
+[P11:OUT COMMAND]
+*****************************************************
+
+"P11:R;"
+"P11:W,{BIT0_VALUE},{BIT1_VALUE},...,{BITn_VALUE};"
+
+[WRITE MODE]		
+{BIT0_VALUE} = 0-2   	(ASCII)	;  LSB ; '1' = HIGH, '0' = LOW, '2' = NOT CHANGED
+{BIT1_VALUE} = 0-2   	(ASCII)	;  '1' = HIGH, '0' = LOW, '2' = NOT CHANGED
+{BITn_VALUE} = 0-2  	(ASCII)	;  MSB
+
+Example :  
+sprintf(&buffer[0], "P11:W,2,1,2;");
+
+****************************************************
+[P01:UART2_TRNSPRNT COMMAND]
+*****************************************************
+
+"P01:{LENGTH},{DATA};\r\n"
+
+{length}  =  0-3FF   			(ASCII)	; number of data from UART3_TRNSPRNT
+{data}    =  byte array 	(HEX)   ; data from UART3_TRNSPRNT
+
+Example :  
+sprintf(&buffer[0], "P01:17, SEND DATA TO TC-GW-001;\r\n");
+
+
+****************************************************
+[P13:UART3_TRNSPRNT COMMAND]
+*****************************************************
+
+"P13:{LENGTH},{DATA};\r\n"
+
+{length}  =  0-3FF   			(ASCII)	; number of data from UART3_TRNSPRNT
+{data}    =  byte array 	(HEX)   ; data from UART3_TRNSPRNT
+
+Example :  
+sprintf(&buffer[0], "P13:17, SEND DATA TO TC-GW-001;\r\n");
+
+****************************************************
+[P14:UART4_TRNSPRNT COMMAND]
+*****************************************************
+
+"P14:{LENGTH},{DATA};\r\n"
+
+{length}  =  0-3FF   			(ASCII)	; number of data from UART4_TRNSPRNT
+{data}    =  byte array 	(HEX)   ; data from UART4_TRNSPRNT
+
+Example :  
+sprintf(&buffer[0], "P14:17, SEND DATA TO TC-GW-001;\r\n");
+
+****************************************************
+[P15:UART5_TRNSPRNT COMMAND]
+*****************************************************
+
+"P15:{LENGTH},{DATA};\r\n"
+
+{length}  =  0-3FF   			(ASCII)	; number of data from UART5_TRNSPRNT
+{data}    =  byte array 	(HEX)   ; data from UART5_TRNSPRNT
+
+Example :  
+sprintf(&buffer[0], "P15:17, SEND DATA TO TC-GW-001;\r\n");
+
+****************************************************
+[P17:UART2_TRNSTCK COMMAND]
+*****************************************************
+
+"P17:{SRC ADDRESS},{DST ADDRESS},{LENGTH},{DATA};\r\n"
+{SRC ADDRESS} =  0-FFFF   	  (ASCII)	; 
+{DST ADDRESS} =  0-FFFF   	  (ASCII)	; 
+{LENGTH} 		  =  0-3FF   	    (ASCII)	; number of data from   UART2_TRNSTCK
+{DATA}        =  byte array 	(HEX)   ; data from UART2_TRNSTCK
+
+Example :  
+sprintf(&buffer[0], "P17:0000,FFFF, 17, SEND DATA TO TC-GW-001;\r\n");
+
+****************************************************
+[P18:UART3_TRNSTCK COMMAND]
+*****************************************************
+
+"P18:{SRC ADDRESS},{DST ADDRESS},{LENGTH},{DATA};\r\n"
+{SRC ADDRESS} =  0-FFFF   	  (ASCII)	; 
+{DST ADDRESS} =  0-FFFF   	  (ASCII)	; 
+{LENGTH} 		  =  0-3FF   	    (ASCII)	; number of data from   UART3_TRNSTCK
+{DATA}        =  byte array 	(HEX)   ; data from UART3_TRNSTCK
+
+Example :  
+sprintf(&buffer[0], "P18:0000,FFFF, 17, SEND DATA TO TC-GW-001;\r\n");
+
+****************************************************
+[P19:UART4_TRNSTCK COMMAND]
+*****************************************************
+
+"P19:{SRC ADDRESS},{DST ADDRESS},{LENGTH},{DATA};\r\n"
+{SRC ADDRESS} =  0-FFFF   	  (ASCII)	; 
+{DST ADDRESS} =  0-FFFF   	  (ASCII)	; 
+{LENGTH} 		  =  0-3FF   	    (ASCII)	; number of data from   UART4_TRNSTCK
+{DATA}        =  byte array 	(HEX)   ; data from UART4_TRNSTCK
+
+Example :  
+sprintf(&buffer[0], "P19:0000,FFFF, 17, SEND DATA TO TC-GW-001;\r\n");
+
+****************************************************
+[P1A:UART5_TRNSTCK COMMAND]
+*****************************************************
+
+"P1A:{SRC ADDRESS},{DST ADDRESS},{LENGTH},{DATA};\r\n"
+{SRC ADDRESS} =  0-FFFF   	  (ASCII)	; 
+{DST ADDRESS} =  0-FFFF   	  (ASCII)	; 
+{LENGTH} 		  =  0-3FF   	    (ASCII)	; number of data from   UART5_TRNSTCK
+{DATA}        =  byte array 	(HEX)   ; data from UART5_TRNSTCK
+
+Example :  
+sprintf(&buffer[0], "P1A:0000,FFFF, 17, SEND DATA TO TC-GW-001;\r\n");
+
+****************************************************
+[P1B:LPUART1_TRNSTCK COMMAND]
+*****************************************************
+
+"P1B:{SRC ADDRESS},{DST ADDRESS},{LENGTH},{DATA};\r\n"
+{SRC ADDRESS} =  0-FFFF   	  (ASCII)	; 
+{DST ADDRESS} =  0-FFFF   	  (ASCII)	; 
+{LENGTH} 		  =  0-3FF   	    (ASCII)	; number of data from   LPUART1_TRNSTCK
+{DATA}        =  byte array 	(HEX)   ; data from LPUART1_TRNSTCK
+
+Example :  
+sprintf(&buffer[0], "P1B:0000,FFFF, 17, SEND DATA TO TC-GW-001;\r\n");
+
+****************************************************
+[P1E:FUEL COMMAND]
+*****************************************************
+
+"P1E:{DATA};"
+
+{DATA}  =  0-FFF   	(ASCII)	; number of data from rfid reader 
+
+Example :  
+sprintf(&buffer[0], "P1E:0FBC;\r\n");
+
+
+****************************************************
+[P1F:RFID COMMAND]
+*****************************************************
+"P1F:C,{LOG IN/OUT};"
+"P1F:W,{Log In/Out},{Pass/Not Pass},{TIMESTAMP},{LENGTH},{DATA};\r\n"
+"P1F:R;"
+
+{TIMESTAMP} = YYYY-MM-DDThh:mm:ssTZD ; UTC TIME AND DATE
+{length}  	=  0-3FF   	(ASCII)	; number of data from rfid reader 
+{data}    	=  byte array (HEX)   ; data from rfid reader
+
+Example :  
+sprintf(&buffer[0], "P1F:W,1,0,2017-11-08T00:51:33.042Z,A1,%  ^DRIVING LICENSE$TEST$MR.^^?\r\n;6007641111111111119=180919770411=?\r\n+             21            1            9999958  00100                     ?\r\n;\r\n");
+
+****************************************************
+[P20:UMRR SMARTMICRO COMMAND]
+*****************************************************
+"P20:{CAN_ID}{LENGTH}{DATA};\r\n"
+
+{CAN_ID} = 0-3FF 	; 	 (2 BYTE HEX)
+{LENGTH} = 0-3FF   	 (1BYTE HEX)	; number of data from UMRR sensor 
+{data}   = byte array (HEX)   ; data from UMRR sensor
+
+Example :  
+sprintf(&buffer[0], "P20:;\r\n");
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+                                                               [TC-GW GPS TRACKER SIDE]
+-------------------------------------------------------------------------------------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[MAIN PROTOCOL PACKET]
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>UUID;TAG;
+
+
+">>{UUID},{PROTOCOL_VER};{TAG1};{TAG2};{TAG3};...;{TAGn};\0x17\r\n"
+
+Example : sprintf(&buffer[0], ">>1234567890ABCDEF,01;G00:2017-08-13T13:13:59.000Z,A,13.293238N,100.941460E,2,307.30,A,3,0.91,0.53,0.74;E00:0000000000000000;S0F:1;S11:0;S12:0,0,0,20;S04:0,S07:0;S08:01CE,0000;M01:W,1;P1F:W,1,1,2017-11-11T03:10:58.000Z,144,% RATPRASIT NATTHAPON MR ?\r\n;6007643471201138010=180419830116=?\r\n+             22            1            0062158  00102                     ?\r\n;\0x17\r\n");
+Example : sprintf(&buffer[0], ">>0123456789ABCDEF,01;G00:2017-11-14T04:58:26.000Z,A,13.855412N,100.630880E,40,298.51,A,3,3.62,1.58,3.25;M00:900.09;E00:000000000000000C;\0x17\r\n");
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+TAG FORMAT INFO.
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*****************************************************
+[>> START OF FRAME INFO]
+*****************************************************
+">>{PROTOCOL_VER},{UUID};"
+
+{PROTOCOL_VER} = 00 - FF  (ASCII HEX)
+{UUID} = 000000000000000 - FFFFFFFFFFFFFFFF  (ASCII HEX) ;universal unit identifier (UUID) hexadecimal number 16 digit
+
+Example : sprintf(&buffer[0], ">>01,1234567890ABCDEF;");
+Example : sprintf(&buffer[0], ">>01,000006789012345;");
+
+
+*****************************************************
+[G00:GPS INFO.]
+*****************************************************
+
+"G00:{UTC TIME AND DATE},{STATUS},{LATITUDE AND N/S INDICATOR},{LONGITUDE AND E/W INDICATOR},{SPEED OVER GROUND},{COURSE OVER GROUND},{OPERATE MODE},{FIXED MODE},{PDOP},{HDOP},{VDOP};"
+
+{UTC TIME AND DATE} 			= YYYY-MM-DDThh:mm:ssTZD  
+{STATUS}            			= A = Valid, V = Invalid
+{LATITUDE AND N/S INDICATOR}	= Latitude Decimal Degrees (DD)
+{LONGITUDE AND E/W INDICATOR} 	= Longitude Decimal Degrees (DD)
+{SPEED OVER GROUND}				= km
+{COURSE OVER GROUND}			= Degrees
+{OPERATE MODE}					= Mode 1, M = manual, A = automatic
+{FIXED MODE}					= Mode 2, Fix type, 1 = not available, 2 = 2D, 3 = 3D
+{PDOP}							= Position dilution of precision 0.5 through 99.9
+{HDOP}							= Horizontal dilution of precision 0.5 through 99.9
+{VDOP}							= Vertical dilution of precision 0.5 through 99.9
+
+Example : sprintf(&buffer[0], "G00:2017-08-13T12:48:13.000Z,A,13.293330N,100.941625E,1,357.00,A,3,0.99,0.62,0.78;");
+
+*****************************************************
+[E00:EVENT FLAG INFO.]
+*****************************************************
+"E00:{FLAG};"
+
+{FLAG} = 0000000000000000 - FFFFFFFFFFFFFFFF  ;64BITS Event flag FLAG63:FLAG0
+
+FLAG0 = 1 or 0  ; over speed indicator
+FLAG1 = 1 or 0  ; low speed indicator
+FLAG2 = 1 or 0  ; access control indicator
+FLAG3 = 1 or 0  ; engin status
+FLAG4 = 1 or 0  ; server sync. status
+FLAG5 = 1 or 0  ; emergency1 indicator
+FLAG6 = 1 or 0  ; emergency2 indicator
+FLAG7 = 1 or 0  ; battery1 indicator
+
+FLAG8 = 1 or 0  ; battery2 indicator
+FLAG9 = 1 or 0  ; gsm rssi indicator
+FLAG10 = 1 or 0  ; gps rssi indicator
+FLAG11 = 1 or 0  ; real-time indicator
+
+
+Example : sprintf(&buffer[0], "E00:000008000B0000F1;");
+
+****************************************************
+[P1F:RFID COMMAND]
+*****************************************************
+
+"P1F:W,{Log In/Out},{Pass/Not Pass},{TIMESTAMP},{LENGTH},{DATA};"
+
+{TIMESTAMP} = YYYY-MM-DDThh:mm:ssTZD ; UTC TIME AND DATE
+{length}  	=  0-3FF   	(ASCII)	; number of data from rfid reader 
+{data}    	=  byte array (HEX)   ; data from rfid reader
+
+Example :  
+sprintf(&buffer[0], "P1F:W,1,0,2017-11-08T00:51:33.042Z,A1,%  ^DRIVING LICENSE$TEST$MR.^^?\r\n;6007641111111111119=180919770411=?\r\n+             21            1            9999958  00100                     ?\r\n;\r\n");
+
+*****************************************************
+[S0F: READ DIGITAL INPUT]
+*****************************************************
+
+"S0F:{PORT1},{PORT2},...,{PORTn};"
+
+{PORT1} =  0 - FF  (ASCII)	; Digital Input D7:D0
+{PORT2} =  0 - FF  (ASCII)	; Digital Input D7:D0
+
+Example :  sprintf(&buffer[0], "S0F:03,01;");
+
+*****************************************************
+[S11: READ DIGITAL OUTPUT]
+*****************************************************
+
+"S11:{PORT1},{PORT2},...,{PORTn};"
+
+{PORT1} =  0 - FF  (ASCII)	; Digital Output D7:D0
+{PORT2} =  0 - FF  (ASCII)	; Digital Output D7:D0
+
+Example :  sprintf(&buffer[0],"S11:01,AF;");
+
+*****************************************************
+[S12: READ ANALOG INPUT]
+*****************************************************
+
+"S12:{A1},{A2},...,{An};"
+
+{A1} =  0 - FFF  (ASCII)	; Analog Input Channel 1
+{A2} = 	0 - FFF  (ASCII)	; Analog Input Channel 2
+{An} =  0 - FFF  (ASCII)	; Analog Input Channel n
+
+Example :  sprintf(&buffer[0],"S12:0,FFF,FE8,235;");
+
+*****************************************************
+[S04: READ BUZZER STATUS ONBORAD]
+*****************************************************
+
+"S04:{PORT1},{PORT2},...,{PORTn};"
+
+{PORT1} = 0-FF  (ASCII)   ; BUZZER7:BUZZER0
+{PORT2} = 0-FF  (ASCII)   ; BUZZER7:BUZZER0
+
+Example :  sprintf(&buffer[0],"S04:01;");
+
+*****************************************************
+[S07: READ LED STATUS ONBORAD]
+*****************************************************
+
+"S07:{PORT1},{PORT2},...,{PORTn};"
+
+{PORT1} = 0-FF  (ASCII)   ; LED7:LED0
+{PORT2} = 0-FF  (ASCII)   ; LED7:LED0
+
+Example :  sprintf(&buffer[0],"S07:01,F4;");
+
+*****************************************************
+[S08: READ BATTERY VOLTAGE]
+*****************************************************
+
+"S08:{BATTERY12V},{BATTERY3V7},...,{BATTERYnV};"
+
+{BATTERY12V} = 0 - FFF  (ASCII)   ; VOLTAGE = (40.0 / 4095) * BATTERY12V
+{BATTERY3V7} = 0 - FFF  (ASCII)   ; VOLTAGE = (5.0  / 4095) * BATTERY3V7
+
+Example :  sprintf(&buffer[0],"S08:0A01,0CBF;");
+
+****************************************************
+[M00:MEMORY COMMAND]
+*****************************************************
+
+"M00:{DATA1},{DATA2},...,{DATAn};"
+
+{DATA1} = MILEAGE = double type value   	(ASCII)	; measure in km.
+
+Example :  
+sprintf(&buffer[0], "M00:256.98,TEST;\r\n");
+
+****************************************************
+[M01:RESET COUNTER COMMAND]
+*****************************************************
+
+"M01:W,{DATA};"
+"M01:R;"
+
+{DATA1} = MILEAGE = double type value   	(ASCII)	; measure in km.
+
+Example :  
+
+****************************************************
+[L20:DATA LOGGER V1 COMMAND]
+*****************************************************
+"L20:W,{LENGTH},{INFO};\r\n"
+"L20:R;"
+{LENGTH}  	=  0-FFF   	  (ASCII)	; number of INFO bytes from DataLoggerV1 
+{INFO}    	=  byte array (HEX) = {TAG1}{DATA1}{DATA2}....{TAG2}{DATA1}{DATA2}....  ; data from DataLoggerV1
+
+	{TAG} : YYYXXXXX 1BYTE FIXED
+		3 BITS YYY   = TYPE = 000: REQUEST ALL
+							  001: VOLTAGE DC
+							  010: CURRENT DC
+							  011: VOLTAGE AC
+							  100: CURRENT AC
+							  101: RELAY CONTROL
+							  110: RELAY RESET
+							  111: TEMPERATURE
+
+		5 BITS XXXXX = NUMBER OF CHANNEL = 0 - 31    
+	 
+	{DATA} : n BYTES, DEPENDENT TYPE
+		TYPE = VOLTAGE DC,    DATA = float little endian
+		TYPE = CURRENT DC,    DATA = float little endian
+		TYPE = VOLTAGE AC,    DATA = float little endian
+		TYPE = CURRENT AC,    DATA = float little endian 
+		TYPE = RELAY CONTROL, DATA = uint8_t 
+		TYPE = RELAY RESET,   DATA = uint8_t 
+		TYPE = TEMPERATURE,   DATA = float little endian
+ 
+Example :  
+

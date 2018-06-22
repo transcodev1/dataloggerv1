@@ -84,7 +84,7 @@ label{
 			position: absolute;
 			width: 450px;
 			top:450px;
-			left:370px;
+			left:470px;
 			min-height: 400px;
 			margin-right:3px;
 			margin-top: 10px;
@@ -104,9 +104,21 @@ label{
 			margin-top: 10px;
 			box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
 
-
 		  }
 
+		  .container_tempbar{
+			float: left;
+			background-color: #edf594b3;
+			position: absolute;
+			width: 100px;
+			top:450px;
+			left:325px;
+			min-height: 400px;
+			margin-right:3px;
+			margin-top: 10px;
+			box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
+
+		  }
 
 		  .cont1-sub1{
 
@@ -249,17 +261,6 @@ label{
 					  border: none;
 					  outline:none;
 				  }
-				/*   .button-rst:after{
-					color:#e9e6e4;
-					content: "";
-					display: block;
-					font-size: 30px;
-					height: 30px;
-					text-decoration: none;
-					text-shadow: 0px -1px 1px #bdb5b4, 1px 1px 1px white;
-					position: absolute;
-					width: 30px;
-				} */
 				.button-rst:active{
 					background-image: -webkit-linear-gradient(top, #efedec, #f7f4f4);
 					background-image: linear-gradient(top, #efedec, #f7f4f4);
