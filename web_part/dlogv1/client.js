@@ -9,11 +9,13 @@ class Client {
 		this.socket  = socket;
 		this.uuid    = uuid;
 		
-		this.relay_out_state=0xFF;
-		this.relay_in_state=0xFF;
-
-		this.reset_out_state=0xFF;
-		this.reset_in_state=0xFF;
+		this.toggle = false;
+		
+		this.relay_out_state=0;
+		this.relay_in_state=0;
+		
+		this.rst_out_state=0;
+		this.rst_in_state=0;
 
 		this.relay_buf = [];
 		this.relay_cnt = 0;

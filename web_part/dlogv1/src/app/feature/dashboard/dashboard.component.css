@@ -129,6 +129,8 @@ label{
 			top : 30px;
 			left :30px;
 			margin-top: 5px;
+			border: none;
+			outline:none;
 		/* 	margin:25px 25px; */
 			/* width:400px; */
 		  }
@@ -146,6 +148,8 @@ label{
 					  width: 80px;			
 					  -webkit-transition: all .1s linear;
 					  transition: all .1s linear;
+					  border: none;
+					  outline:none;
 				  }
 		  
 				  .button:after{
@@ -162,7 +166,8 @@ label{
 		  
 		  
 				  .restart:after{
-					  content: "X";
+					  content: "↓";
+					  color: #e9e6e4;
 					  left: 30px;
 					  top: 40px;
 				  }
@@ -190,31 +195,32 @@ label{
 					  background-image: -webkit-linear-gradient(top, #fff, #f4f1ee);
 					  background-image: linear-gradient(top, #fff, #f4f1ee);
 					  color:#0088cc;
+					  border: none;
 				  }
 		  
 				  .heart:hover:after{
 					  color:#f94e66;
 					  text-shadow:0px 0px 6px #f94e66;
+					  border: none;
 				  }
 		  
 				  .flower:hover:after{
 					  color:#f99e4e;
 					  text-shadow:0px 0px 6px #f99e4e;
+					  border: none;
 				  }
-		  
-			
-		  
-				  
 		  
 				  .button:active{
 					  background-image: -webkit-linear-gradient(top, #efedec, #f7f4f4);
 					  background-image: linear-gradient(top, #efedec, #f7f4f4);
 					  box-shadow: 0 3px 5px 0 rgba(0,0,0,.4), inset 0px -3px 1px 1px rgba(204,198,197,.5);
+					  border: none;
 				  }
 		  
 				  .button:active:after{
 					  color:#dbd2d2;
 					  text-shadow: 0px -1px 1px #bdb5b4, 0px 1px 1px white;
+					  border: none;
 				  }
 
 				  .buttonHolder-rst{
@@ -223,6 +229,7 @@ label{
 					top : 100px;
 					left :100px;
 					margin-top: 5px;
+					border: none;
 	
 				  }
 				  .button-rst{
@@ -239,8 +246,10 @@ label{
 					  width: 40px;			
 					  -webkit-transition: all .1s linear;
 					  transition: all .1s linear;
+					  border: none;
+					  outline:none;
 				  }
-				  .button-rst:after{
+				/*   .button-rst:after{
 					color:#e9e6e4;
 					content: "";
 					display: block;
@@ -250,7 +259,7 @@ label{
 					text-shadow: 0px -1px 1px #bdb5b4, 1px 1px 1px white;
 					position: absolute;
 					width: 30px;
-				}
+				} */
 				.button-rst:active{
 					background-image: -webkit-linear-gradient(top, #efedec, #f7f4f4);
 					background-image: linear-gradient(top, #efedec, #f7f4f4);
@@ -303,10 +312,21 @@ label{
 
 					
 				}
+				
+				.warning_text{
+					position: absolute;
+					left: 70%;
+					font-size: 30px;
+					color:rgb(38, 0, 253);
+					text-align: left;
+
+
+					
+				}
 
 				label{
 				 
 					color:saddlebrown;
 					font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;				  
 					  font-size: 20px;
-					}
+				}

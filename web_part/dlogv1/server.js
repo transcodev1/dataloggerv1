@@ -7,8 +7,6 @@ const Client = require('./client');
 
 var DLOGV1 = require('./lib-tcdlogv1');
 
-
-
 global.DLOGV1_TAG_CNT_MASK 			= (0x1F)
 global.DLOGV1_TAG_TYP_MASK 			= (0xE0)
 global.DLOGV1_TYPE_REQ_ALL 			= (0x00)
@@ -24,9 +22,8 @@ class Server {
 	
 
 
-	constructor (port, address) {
-		this.port = port || 5000;
-		this.address = address || '127.0.0.1';
+	constructor (port) {
+		this.port = port;
 
 		// Array to hold our currently connected clients
 		this.clients = [];
@@ -116,7 +113,7 @@ class Server {
 		});
 		
 		// starting the server
-		this.connection.listen(this.port, this.address);
+		this.connection.listen(this.port);
 		
 		// setuping the callback of the start function
 		if (callback != undefined) {
@@ -149,12 +146,13 @@ var login_cbk = function (client, uuid) {
 
 var login_cmpt_cbk = function (client, uuid) {
 	
-	console.log("[Login]: Login Success...(^__^)...");
+	console.log("[Login]: Login Success...(^__^)...<<");
 	console.log("[Login]: UUID = "+ uuid);
 
 	
 	if (client.uuid == 0) {
-		client.uuid = Number(uuid);
+		client.uuid = parseInt(uuid, 16);
+		console.log("update uuid"+  parseInt(uuid, 16));
 	}
 
 };	
@@ -258,7 +256,7 @@ function decode_dlogv1e (client, buf) {
 					client.vac_buf[i_cnt] = Math.round(buf.readFloatLE(tag_idx) * 10) / 10;
 					tag_idx += 4;
 					client.vac_cnt++;
-					
+
 					console.log("[DLOG_V1]: V" + (i_cnt + 1) + "AC = " + client.vac_buf[i_cnt] + "V");
 				}
 
@@ -275,10 +273,20 @@ function decode_dlogv1e (client, buf) {
 					client.relay_cnt++;
 					console.log("[DLOG_V1]: RELAY = "+ client.relay_buf[i_cnt].toString(16));
 				}
+				console.log(client.relay_buf[0])
+					if(client.relay_in_state != client.relay_buf[0])
+					client.toggle = true;
+					else client.toggle = false;
+				
 				client.relay_in_state = client.relay_buf[0];
+			
 				break;
 
 			case DLOGV1_TYPE_RELAY_RESET:
+			console.log("rst update!")
+					client.toggle = true;
+					
+					
 				break;
 
 			case DLOGV1_TYPE_TEMP:
@@ -294,8 +302,60 @@ function decode_dlogv1e (client, buf) {
 				break;
 			} //swtich
 
-		} //while(1)
+		} //while(1
+		
+		const Influx = require('influxdb-nodejs');
+const client_inf = new Influx('http://intern:intern@203.113.114.6:20102/tc_datalogger');
+// i --> integer
+// s --> string
+// f --> float
+// b --> boolean
+const fieldSchema = {
+  temp: 'f',
+  volt_ac: 'f',
+  volt_dc_1: 'f',
+  volt_dc_2: 'f',
+  relay_1:'i',
+	relay_2:'i',
+	relay_3:'i',
+	relay_4:'i',
+	relay_5:'i',
+	relay_6:'i',
+	relay_7:'i',
+	relay_8:'i'
+  
+};
+const tagSchema = {
+ id : '*'
+};
+	client_inf.schema('dlog', fieldSchema, tagSchema, {
+				// default is false
+				stripUnknown: true,
+			  });
+			  client_inf.write('dlog')
+				.tag({
+				  id: client.uuid
+				})
+				.field({		
+				temp: client.tmp_buf[0],
+				volt_ac: client.vac_buf[0],
+				volt_dc_1:client.vdc_buf[0],
+				volt_dc_2: client.vdc_buf[1],
+				relay_1: ((client.relay_in_state & 0x01) ? 1 : 0),
+				relay_2: ((client.relay_in_state & 0x02) ? 1 : 0),
+				relay_3: ((client.relay_in_state & 0x04) ? 1 : 0),
+				relay_4: ((client.relay_in_state & 0x08) ? 1 : 0),
+				relay_5: ((client.relay_in_state & 0x10) ? 1 : 0),
+				relay_6: ((client.relay_in_state & 0x20) ? 1 : 0),
+				relay_7: ((client.relay_in_state & 0x40) ? 1 : 0),
+				relay_8: ((client.relay_in_state & 0x80) ? 1 : 0)
+				})
+				.then(() => console.info('write point success'))
+				.catch(console.error);
+		
+		
 	}//if (reply_len > 0)
+		
 
 }
 
@@ -323,8 +383,5 @@ function getDateTime() {
     return year + "-" + month + "-" + day + "_" + hour + "-" + min + "-" + sec;
 
 }
-
-
-
 
 module.exports = Server;

@@ -149,27 +149,39 @@ app.post('/relay_rst', (req, res) => {
 
 		if (client.uuid === req.body.UUID) {
 			if (req.body.MODE == 0)
-			client.rst_out_state = client.rst_in_state ^ (1 << req.body.CH);
+			client.reset_out_state = client.reset_in_state || (0 << req.body.CH);
 		else {
-			client.relay_out_state = req.body.CH;	/* 0000 0001 */
-		}
-
-
-			/* client.rst_out_state = client.rst_in_state ^ (1 << req.body.CH); */
-
-			
+			client.reset_out_state = req.body.CH;	/* 0000 0001 */
+		}		
 
 			const buf1 = Buffer.from("<<" + client.uuid.toString(16) + ",01;" + "L20:W,2,");
 			const buf2 = Buffer.allocUnsafe(2);
 			const buf3 = Buffer.from(";\r\n\x17\r\n");
-			buf2.writeUInt8(0xC0, 0);
-			buf2.writeUInt8(client.rst_out_state, 1);
-
+			buf2.writeUInt8(0xA0, 0);
+			buf2.writeUInt8(client.reset_out_state, 1);
 
 
 			const buf_req1 = Buffer.concat([buf1, buf2, buf3], buf1.length + buf2.length + buf3.length);
 
 			client.socket.write(buf_req1);
+
+			setTimeout(function () {
+			
+				const buf1 = Buffer.from("<<" + client.uuid.toString(16) + ",01;"+"L20:W,2,");
+				const buf2 = Buffer.allocUnsafe(2);
+				const buf3 = Buffer.from(";\r\n\x17\r\n");
+				buf2.writeUInt8(0xA0, 0);
+				buf2.writeUInt8(client.reset_in_state, 1);
+	
+				
+	
+				const buf_req1 = Buffer.concat([buf1, buf2, buf3], buf1.length + buf2.length + buf3.length);
+	
+				client.socket.write(buf_req1);	
+				
+				
+			},5000)
+				
 		}
 	});
 
@@ -320,9 +332,9 @@ app.post('/page_update', (req, res) => {
 
 	server.clients.forEach((client) => {
 		
-		
 
 		if (client.uuid == req.body.UUID) {
+			
 
 			obj = {
 				RELAY: {
@@ -354,12 +366,17 @@ app.post('/page_update', (req, res) => {
 					CH5: ((client.reset_in_state & 0x20) ? 1 : 0),
 					CH6: ((client.reset_in_state & 0x40) ? 1 : 0),
 					CH7: ((client.reset_in_state & 0x80) ? 1 : 0)
-				}
+				},
+				BTN:{
+					CH0: client.toggle
 			}
-
+			}
+			
                                                                                                                                
 		}
+		if(client.toggle == true) client.toggle = false;
 	});
 	res.send(obj);
+	
 });
 

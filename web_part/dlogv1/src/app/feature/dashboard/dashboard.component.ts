@@ -21,7 +21,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   intv: any;
 
   temp: number;
-
+  warning_text: string;
   status_show: string;
   dlog_show: string;
 
@@ -38,12 +38,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     /* ################################################### */
     var ip = 'http://13.67.73.17:80'
    /*  var ip = 'http://192.168.64.1:80' */
-    /*  var ip = 'http://192.168.64.1' */
+     /* var ip = 'http://192.168.64.1' */
 
     /* ################################################### */
   
     
-    var btn_cd_max = 8  // 4 sec
+    var btn_cd_max = 20  // 10 sec
     var global_index = 0;
     var predata = []
     var predata_vdc = []
@@ -145,6 +145,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     const button_id = [];
 
+    const warning_text = (<HTMLInputElement>document.getElementById('warning_text'))
+
     const r1 = (<HTMLInputElement>document.getElementById('r1'));
     const r2 = (<HTMLInputElement>document.getElementById('r2'));
     const r3 = (<HTMLInputElement>document.getElementById('r3'));
@@ -169,22 +171,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     function disbleButton() {
       button_id.forEach((btn) => {
-        btn_cd = 0;
         btn.disabled = true;
+        warning_text.innerText ="Loading...";
       })
     }
     function enableButton() {
 
       button_id.forEach((btn) => {
         btn.disabled = false;
+        warning_text.innerText ="";
       })
     }
+    function resetChecking(r_btn)
+    {
+      if(r_btn.className== "button off")
+      {
+        warning_text.innerText ="Reset denied";
+      return 1;
+    }
+      else if(r_btn.className== "button on")
+      return 0;
+    }
 
-    r1.addEventListener('click', function (e) {
+   /*  r1.addEventListener('click', function (e) {
       disbleButton()
       console.log('r1 was clicked');
       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 0, MODE: 0 });
-    });
+    }); */
 
     r2.addEventListener('click', function (e) {
       disbleButton()
@@ -228,52 +241,70 @@ export class DashboardComponent implements OnInit, OnDestroy {
       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 7, MODE: 0 });
     });
 
-    rst1.addEventListener('click', function (e) {
+    /* rst1.addEventListener('click', function (e) {
+      if(!resetChecking(r1))
+      {
       disbleButton()
       console.log('rst1 was clicked');
       post_json(ip + '/relay_rst', { UUID: device_id, CH: 0 ,MODE:0});
-    });
+      }
+    }); */
 
     rst2.addEventListener('click', function (e) {
+      if(!resetChecking(r2))
+      {
       disbleButton()
       console.log('rst2 was clicked');
       post_json(ip + '/relay_rst', { UUID: device_id, CH: 1 ,MODE:0});
+      }
     });
 
     rst3.addEventListener('click', function (e) {
+      if(!resetChecking(r3)){
       disbleButton()
       console.log('rst3 was clicked');
       post_json(ip + '/relay_rst', { UUID: device_id, CH: 2 ,MODE:0});
+    }
     });
 
     rst4.addEventListener('click', function (e) {
+      if(!resetChecking(r4)){
       disbleButton()
       console.log('rst4 was clicked');
       post_json(ip + '/relay_rst', { UUID: device_id, CH: 3 ,MODE:0});
+      }
     });
 
     rst5.addEventListener('click', function (e) {
+      if(!resetChecking(r5)){
       disbleButton()
       console.log('rst5 was clicked');
       post_json(ip + '/relay_rst', { UUID: device_id, CH: 4 ,MODE:0});
+      }
     });
 
     rst6.addEventListener('click', function (e) {
+      if(!resetChecking(r6)){
       disbleButton()
       console.log('rst6 was clicked');
       post_json(ip + '/relay_rst', { UUID: device_id, CH: 5 ,MODE:0});
+      }
     });
 
     rst7.addEventListener('click', function (e) {
+      if(!resetChecking(r7)){
       disbleButton()
       console.log('rst7 was clicked');
       post_json(ip + '/relay_rst', { UUID: device_id, CH: 6 ,MODE:0});
+      }
     });
 
     rst8.addEventListener('click', function (e) {
+      if(!resetChecking(r8)){
       disbleButton()
       console.log('rst8 was clicked');
       post_json(ip + '/relay_rst', { UUID: device_id, CH: 7 ,MODE:0});
+      }
     });
 
     r_on.addEventListener('click', function (e) {
@@ -290,17 +321,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     r_rst.addEventListener('click', function (e) {
       disbleButton()
       console.log('r_off was clicked');
-      post_json(ip + '/relay_rst', { UUID: device_id, CH: 0xFF, MODE: 1 });
+      post_json(ip + '/relay_rst', { UUID: device_id, CH: 0x1, MODE: 1 });
     });
-    var btn_cd = 0
+   
+    var btn_cd =0;
     this.intv = setInterval(function () {
 
-
-      if (btn_cd == btn_cd_max) {
-        enableButton()
-        btn_cd = 0;
+      if(btn_cd >= btn_cd_max)
+      {
+        enableButton();
+        btn_cd =0;
       }
-      btn_cd++
 
       fetch(ip + '/get_id', {
       })
@@ -331,6 +362,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
         
 
           if (!isEmptyObject(DLOGV1) && !0) {
+            console.log(DLOGV1.BTN.CH0)
+            
+            if(DLOGV1.BTN.CH0==true)
+            enableButton();
 
             document.getElementById('r1').style.backgroundColor = ((DLOGV1.RELAY.CH0 == 1) ? "green" : "red");
             document.getElementById('r2').style.backgroundColor = ((DLOGV1.RELAY.CH1 == 1) ? "green" : "red");
@@ -478,7 +513,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
             removeData(chart);
             addData(chart_tmp, 0, data[0].mean_temp);
             removeData(chart_tmp);
-
+/*       
+            chart_tmp.options.scales.yAxes[0].ticks.min = data[0].mean_temp-0.5
+            chart_tmp.options.scales.yAxes[0].ticks.max = data[0].mean_temp+0.5
+            chart.update(); */
           }
 
 
@@ -520,7 +558,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         labels: ["-5m", "-4m", "-3m", "-2m", "-1m",],
         datasets: [{
           label: "TEMPERATURE",
-          backgroundColor: 'orange',
+          backgroundColor:'orange',
           borderColor: 'red',
           data: predata,
           spanGaps: false,
@@ -538,8 +576,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
               min: 23,
               max: 29,
               stepSize: 0.5,
-              /*  min: Math.min.apply(this, predata) - 3,
-              max: Math.max.apply(this, predata) + 3, */
+              /*  min: Math.min.apply(this, predata.values[0]) - 3,
+              max: Math.max.apply(this, predata.values[0]) + 3, */
             },/* suggestedMin: 0.5, suggestedMax: 5.5 */
           }],
           xAxes: [{
@@ -576,7 +614,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         labels: ["-5m", "-4m", "-3m", "-2m", "-1m",],
         datasets: [{
           label: "TEMP",
-          /* backgroundColor: 'orange' ,*/
+          backgroundColor: 'orange' ,
           borderColor: 'red',
           data: predata,
           spanGaps: false,
@@ -584,6 +622,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
         }]
       },
+
 
       // Configuration options go here
       options: {
