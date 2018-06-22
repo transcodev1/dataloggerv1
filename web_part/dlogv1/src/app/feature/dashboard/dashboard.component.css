@@ -7,7 +7,7 @@
     overflow: hidden;
 }
 
-/* Style the links inside the navigation bar */
+
 .topnav a {
    
     float: left;
@@ -15,22 +15,21 @@
     display: block;
     color: #ec9595;
     text-align: center;
-    padding: 40px 40px;
+    padding: 40px 0px;
     text-decoration: none;
     font-size: 17px;
 }
 
-/* Change the color of links on hover */
-.topnav a:hover {
+
+/* .topnav a:hover {
     background-color: #ddd;
     color: black;
 }
 
-/* Add a color to the active/current link */
 .topnav a.active {
     background-color: #4CAF50;
     color: white;
-}
+} */
 
 label{
 	
@@ -47,7 +46,7 @@ label{
 			top: 200px;
 			width: 1000px;
 			left: 100px;
-			min-height: 1000px;
+			min-height: 1350px;
 			margin-right:35px;
 			margin-top: 10px;
 			box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
@@ -93,6 +92,21 @@ label{
 
 
 		  }
+		  .container-4{
+			float: left;
+			background-color: #f18b8b8a;
+			position: absolute;
+			width: 900px;
+			top:900px;
+			left:20px;
+			min-height: 400px;
+			margin-right:3px;
+			margin-top: 10px;
+			box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
+
+
+		  }
+
 
 		  .cont1-sub1{
 
@@ -248,12 +262,7 @@ label{
 					text-shadow: 0px -1px 1px #bdb5b4, 0px 1px 1px white;
 				}
 
-				 label{
-				 
-				  color:saddlebrown;
-				  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;				  
-					font-size: 20px;
-				  }
+				
 
 				  .myButton{
 					background:url(../../../assets/images/temp.png) no-repeat;
@@ -294,3 +303,10 @@ label{
 
 					
 				}
+
+				label{
+				 
+					color:saddlebrown;
+					font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;				  
+					  font-size: 20px;
+					}
