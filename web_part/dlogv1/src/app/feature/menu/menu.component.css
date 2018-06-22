@@ -1,0 +1,125 @@
+/* Add a black background color to the top navigation */
+.topnav {
+    background-color: rgba(173, 171, 171, 0.671);
+    overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/*---------------------------------------------------------*/
+.icon-bar {
+    width: 100%; /* Full-width */
+    background-color: #555; /* Dark-grey background */
+    overflow: auto; /* Overflow due to float */
+}
+
+.icon-bar a {
+    float: left; /* Float links side by side */
+    text-align: center; /* Center-align text */
+    width: 30%; /* Equal width (5 icons with 20% width each = 100%) */
+    padding: 12px 0; /* Some top and bottom padding */
+    transition: all 0.3s ease; /* Add transition for hover effects */
+    color: white; /* White text color */
+    font-size: 36px; /* Increased font size */
+}
+
+.icon-bar a:hover {
+    background-color: #000; /* Add a hover color */
+}
+
+.active {
+    background-color: #4CAF50; /* Add an active/current color */
+}
+/*---------------------------------------------------------*/
+/* Style the links inside the sidenav */
+#mySidenav a {
+    position: fixed; /* Position them relative to the browser window */
+    left: -200px; /* Position them outside of the screen */
+    transition: 0.3s; /* Add transition on hover */
+    padding: 20px; /* 15px padding */
+    height: 80px;
+    width: 245px; /* Set a specific width */
+    text-decoration: none; /* Remove underline */
+    font-size: 40px; /* Increase font size */
+    color: white; /* White text color */
+    border-radius: 0 6px 6px 0; /* Rounded corners on the top right and bottom right side */
+    z-index: 1;
+}
+
+#mySidenav a:hover {
+    left: 0; /* On mouse-over, make the elements appear as they should */
+}
+
+/* The about link: 20px from the top with a green background */
+#dashboard {
+    top: 80px;
+    background-color: hsla(206, 90%, 54%, 0.904);
+    
+}
+
+#setting {
+    top: 200px;
+    background-color: rgba(85, 85, 85, 0.904);
+}
+#overview {
+    top: 320px;
+    background-color: hsla(206, 90%, 54%, 0.904); 
+}
+#find{
+    top: 260px;
+    background-color:  rgba(85, 85, 85, 0.904);
+}
+/*---------------------------------------------------------*/
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+#font {
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    font-size: 32px;
+    font-style: normal;
+    color:rgb(253, 253, 253);
+    text-align:left;
+    padding:15px;
+}
+
+#lato_font {
+    font-family: "Lato", sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    color:rgb(8, 8, 8);
+    text-align:left;
+    padding:15px;
+}
+#lato_font1 {
+    font-family: "Lato", sans-serif;
+    font-size: 5px;
+    font-style: normal;
+    color:rgb(8, 8, 8);
+    text-align:left;
+    padding:0px;
+}

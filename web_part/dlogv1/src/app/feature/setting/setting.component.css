@@ -1,0 +1,104 @@
+div.container {
+    float: left;
+    background-color: #3535358a;
+    position: relative;
+    top: 200px;
+    width: 1000px;
+    left: 100px;
+    min-height: 1000px;
+    margin-right:35px;
+    margin-top: 10px;
+    box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
+  }
+  .container-1{
+    float: left;
+    background-color: #673b1d8a;
+    position: absolute;
+    width: 800px;
+    left:20px;
+    min-height: 700px;
+    margin-right:30px;
+    margin-top: 12px;
+    box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
+
+
+  }
+  .cont1-sub1{
+    float: left;
+    background-color: #d37c208a;
+    position: absolute;
+    width: 100%;
+    left :0px;
+    height: 100px;
+    min-height: 50px;
+    margin-right:0px;
+    margin-top: -4px;
+    box-shadow:0 1px 2px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
+    border-radius: 50% / 10%;
+
+  }
+  .topic{
+      font-size: 40px;
+  }
+  .cont1-sub2{
+    float: left;
+    background-color: #e29d538a;
+    position: absolute;
+    width: 70%;
+    top: 120px;
+    left :0px;
+    height: 50%;
+    min-height: 50px;
+    margin-right:8px;
+    margin-top: -2px;
+    box-shadow:0 1px 2px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
+    border-radius: 20% / 1%;
+
+  }
+  .grid-container {
+    display: inline-table;
+    position: absolute;
+    left: 2px;
+    top : 10px;
+
+    grid-template-columns: 100px 100px 100px;
+    grid-template-rows: auto auto auto;
+    grid-gap: 2px;
+    text-align: left;
+    padding: 5px;
+}
+
+.grid-item {
+    /* border: 1px solid #2196F3; */
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+    background-color: cadetblue
+}
+
+.item1 {
+    grid-column: 1 / span4;
+    text-align: center;
+  
+    padding: 1px;
+    font-size: 20px;
+    text-align: left;
+}
+
+.item2 {
+    grid-column:2/span1;
+    text-align: center;
+    border: 0px solid green;
+    padding: 1px;
+    font-size: 20px;
+    text-align: left;
+}
+/* .input[type=text] {
+  width: 100%;
+  padding: 2px;
+  font-size: 20px;
+  margin: 0px 0;
+  border-radius:4px;
+  box-sizing: border-box;
+  outline-color: rgb(5, 255, 55)
+} */

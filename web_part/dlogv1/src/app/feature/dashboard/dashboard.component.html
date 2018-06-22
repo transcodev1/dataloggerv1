@@ -1,0 +1,144 @@
+<!-- <h2>
+  service list
+  <li *ngFor="let d of data">
+
+    {{d.userId}}
+
+  </li>
+
+  <li *ngFor="let item of items;let i = index">
+    {{item}} {{i}}
+  </li>
+
+</h2> -->
+<script src="node_modules/chart.js/Chart.min.js"></script>
+<script src="node_modules/angular-chart.js/dist/angular-chart.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
+  <div class="topnav" id="myTopnav">
+      <li style="float:left">
+
+          <select id="selector1" style="font-size: 50px" >
+
+              <option value="0">dlog1</option>
+              <option value="1">dlog2</option>
+              <option value="2">dlog3</option>
+              <option value="3">dlog4</option>
+  
+            </select>
+  </li>
+    <label>{{dlog_show}} STATUS : </label>
+    <label style="color:green">{{status_show}} </label>
+      <a style="float:left" type="submit" class="lato_font"></a>
+      
+ </div>     
+
+<div class="container">
+
+  <div class="container-1">
+      <label>RELAY COnfig</label>
+    <div class="cont1-sub1">
+      <label>RELAY1 ("master")</label><br>
+
+      <div id='bg_rst1' class="buttonHolder-rst" >  <a id='rst1'class="button-rst restart"></a><br></div>
+        <div id='bg_r1' class="buttonHolder" ><a id='r1' class="button on" ></a></div>
+
+    </div>
+    
+    <div class="cont1-sub1" style="left :166px">
+        <label>RELAY2</label><br>
+        <div id='bg_rst2' class="buttonHolder-rst" >  <a id='rst2'class="button-rst restart"></a><br></div>
+        
+          <div id='bg_r2' class="buttonHolder" ><a id='r2' class="button on" ></a></div>
+  
+      </div>
+      <div class="cont1-sub1" style="left :324px">
+          <label>RELAY3</label><br>
+          <div id='bg_rst3' class="buttonHolder-rst" >  <a id='rst3'class="button-rst restart"></a><br></div>
+  
+          <div id='bg_r3' class="buttonHolder" ><a id='r3' class="button on" ></a></div>
+          
+    
+        </div>
+        <div class="cont1-sub1" style="left :482px">
+            <label>RELAY4</label><br>
+
+        <div id='bg_rst4' class="buttonHolder-rst" >  <a id='rst4'class="button-rst restart"></a><br></div>
+  
+          <div id='bg_r4' class="buttonHolder" ><a id='r4' class="button on" ></a></div>
+      
+          </div>
+          <div class="cont1-sub1" style="top :190px">
+              <label>RELAY5</label><br>
+          
+              <div id='bg_rst5' class="buttonHolder-rst" >  <a id='rst5'class="button-rst restart"></a><br></div>
+  
+          <div id='bg_r5' class="buttonHolder" ><a id='r5' class="button on" ></a></div>
+        
+            </div>
+            <div class="cont1-sub1" style="top :190px;left:166px ">
+                <label>RELAY6</label><br>
+            
+                <div id='bg_rst6' class="buttonHolder-rst" >  <a id='rst6'class="button-rst restart"></a><br></div>
+  
+                <div id='bg_r6' class="buttonHolder" ><a id='r6' class="button on" ></a></div>
+          
+              </div>
+              <div class="cont1-sub1" style="top :190px;left:324px ">
+                  <label>RELAY7</label><br>
+              
+                  <div id='bg_rst7' class="buttonHolder-rst" >  <a id='rst7'class="button-rst restart"></a><br></div>
+  
+                  <div id='bg_r7' class="buttonHolder" ><a id='r7' class="button on" ></a></div>
+            
+                </div>
+                <div class="cont1-sub1" style="top :190px;left:482px ">
+                    <label>RELAY8</label><br>
+                
+                    <div id='bg_rst8' class="buttonHolder-rst" >  <a id='rst8'class="button-rst restart"></a><br></div>
+  
+                    <div id='bg_r8' class="buttonHolder" ><a id='r8' class="button on" ></a></div>
+              
+                  </div>
+    
+                  <button mat-raised-button style="top:50px" id="r_rst">RESET (ALL)</button>
+                  <button mat-raised-button style="top:150px;background-color:green;"id="r_on"> ON (ALL)</button>
+                  <button mat-raised-button style="top:250px;background-color:rgb(255, 51, 15);" id="r_off">OFF (ALL)</button>
+  </div>
+
+  <div class="container-2">
+<br><a>___</a>
+    <img src="../../../assets/images/temp.png" style="width:120px;height:120px;">
+    <label id="temp"style="font-size: 50px"></label> C
+    <div class="row">
+        <div  class="col-md-6">
+          <div style="display: block;">
+          <canvas baseChart width="100" height="100"
+                      [datasets]="lineChartData"
+                      [labels]="lineChartLabels"
+                      [options]="lineChartOptions"
+                      [colors]="lineChartColors"
+                      [legend]="lineChartLegend"
+                      [chartType]="lineChartType"
+                      (chartHover)="chartHovered($event)"
+                      (chartClick)="chartClicked($event)">
+                    </canvas>
+          </div>
+        </div>
+        
+          <button (click)="randomize()">CLICK</button>
+      
+
+      </div>
+    GRAPH
+   
+    </div>
+    <div class="container-3">
+        <canvas style="position: absolute;;left :30px;top: 50px;" id="myChart" width="300" height="300"></canvas>
+     <label id="vdc1"> </label> V  <br>
+     <label id ="vdc2"></label> V  <br>
+     <label id ="vac1"> </label>V  <br>
+      </div>
+
+
+</div>
