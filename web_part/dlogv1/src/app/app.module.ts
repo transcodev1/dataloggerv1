@@ -18,6 +18,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule, MatCheckboxModule} from '@angular/material';
 import { RightboxComponent } from './feature/rightbox/rightbox.component';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 
 const appRoutes: Routes = [
   {
@@ -55,6 +57,7 @@ const appRoutes: Routes = [
     HttpModule,
     ChartsModule,
     BrowserAnimationsModule,MatButtonModule, MatCheckboxModule,
+    NgbModule.forRoot(),
     RouterModule.forRoot(appRoutes)
   ],
   exports:[],

@@ -40,7 +40,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     var device_id = 12345678
     var device_uuid = []
 
-    fetch(ip + '/api/get_id', {
+    fetch(ip + '/get_id', {
     })
       .then(res => res.json())
       .then(function handleJson(id_login) {
@@ -58,6 +58,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     //***************************** 
     var device_select = 'dlog1'
 
+    const dropdown1 = <HTMLInputElement>document.getElementById("dropdown1");
+    dropdown1.addEventListener('change',function(e){
+      console.log('->>'+dropdown1.value);
+    })
+
     const selector1 = <HTMLInputElement>document.getElementById('selector1');
     selector1.addEventListener('change', function (e) {
       console.log('selector1 was changed');
@@ -72,7 +77,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       fetch(ip + '/init_temp',
         {
           method: 'POST',
-          body: JSON.stringify({ UUID: device_id }),
+          body: JSON.stringify({ "UUID": device_id}),
           headers: { 'Content-Type': 'application/json' },
         })
         .then(res => res.json())
@@ -116,7 +121,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
         )
 
-       /*  enableButton(); */
+      enableButton();
       device_select = (<HTMLInputElement>document.getElementById('selector1')).value;
       selector1.disabled = false;
 
@@ -152,183 +157,183 @@ export class DashboardComponent implements OnInit, OnDestroy {
       console.log('up');
     });
 
+  
+      const button_id = [];
+      const buttonAllR = [];
+      const buttonAllReset = [];
+      button_id.push(r1, r2, r3, r4, r5, r6, r7, r8, rst1, rst2, rst3, rst4, rst5, rst6, rst7, rst8, r_on, r_off, r_rst)
+      buttonAllR.push(r1, r2, r3, r4, r5, r6, r7, r8)
+      buttonAllReset.push(rst1, rst2, rst3, rst4, rst5, rst6, rst7, rst8)
 
-    const button_id = [];
-    const buttonAllR = [];
-    const buttonAllReset =[];
-    button_id.push(r1, r2, r3, r4, r5, r6, r7, r8, rst1, rst2, rst3, rst4, rst5, rst6, rst7, rst8, r_on, r_off, r_rst)
-    buttonAllR.push(r1, r2, r3, r4, r5, r6, r7, r8)
-    buttonAllReset.push( rst1, rst2, rst3, rst4, rst5, rst6, rst7, rst8)
-
-    function disbleButton(disableSelector) {
-      button_id.forEach((btn) => {
-        btn.disabled = true;
-        disableSelector?selector1.disabled = true:selector1.disabled = false;
-        warning_text.innerText = "Loading...";
-      })
-    }
-    function enableButton() {
-
-      button_id.forEach((btn) => {
-        btn.disabled = false;
-        selector1.disabled = false;
-        warning_text.innerText = "";
-       
-      })
-    }
-    function resetChecking(r_btn) {
-      if (r_btn.className == "button off") {
-        warning_text.innerText = "Reset denied";
-        return 1;
+      function disbleButton(disableSelector) {
+        button_id.forEach((btn) => {
+          btn.disabled = true;
+          disableSelector ? selector1.disabled = true : selector1.disabled = false;
+          warning_text.innerText = "Loading...";
+        })
       }
-      else if (r_btn.className == "button on"){
-      isReset = true;
-      return 0;
-    }
-        
-    }
+      function enableButton() {
 
-    /*  r1.addEventListener('click', function (e) {
-       disbleButton(true)
-       console.log('r1 was clicked');
-       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 0, MODE: 0 });
-     }); */
+        button_id.forEach((btn) => {
+          btn.disabled = false;
+          selector1.disabled = false;
+          warning_text.innerText = "";
 
-    r2.addEventListener('click', function (e) {
-      disbleButton(true)
-      console.log('r2 was clicked');
-      post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 1, MODE: 0 });
-    });
-
-    r3.addEventListener('click', function (e) {
-      disbleButton(true)
-      console.log('r3 was clicked');
-      post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 2, MODE: 0 });
-    });
-
-    r4.addEventListener('click', function (e) {
-      disbleButton(true)
-      console.log('r4 was clicked');
-      post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 3, MODE: 0 });
-    });
-
-    r5.addEventListener('click', function (e) {
-      disbleButton(true)
-      console.log('r5 was clicked');
-      post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 4, MODE: 0 });
-    });
-
-    r6.addEventListener('click', function (e) {
-      disbleButton(true)
-      console.log('r6 was clicked');
-      post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 5, MODE: 0 });
-    });
-
-    r7.addEventListener('click', function (e) {
-      disbleButton(true)
-      console.log('r7 was clicked');
-      post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 6, MODE: 0 });
-    });
-
-    r8.addEventListener('click', function (e) {
-      disbleButton(true)
-      console.log('r8 was clicked');
-      post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 7, MODE: 0 });
-    });
-
-    /* rst1.addEventListener('click', function (e) {
-      if(!resetChecking(r1))
-      {
-      disbleButton(true)
-      console.log('rst1 was clicked');
-      post_json(ip + '/relay_rst', { UUID: device_id, CH: 0 ,MODE:0});
+        })
       }
-    }); */
-
-    rst2.addEventListener('click', function (e) {
-      if (!resetChecking(r2)) {
-        disbleButton(true)
-        console.log('rst2 was clicked');
-        post_json(ip + '/relay_rst', { UUID: device_id, CH: 1, MODE: 0 });
-      }
-    });
-
-    rst3.addEventListener('click', function (e) {
-      if (!resetChecking(r3)) {
-        disbleButton(true)
-        console.log('rst3 was clicked');
-        post_json(ip + '/relay_rst', { UUID: device_id, CH: 2, MODE: 0 });
-      }
-    });
-
-    rst4.addEventListener('click', function (e) {
-      if (!resetChecking(r4)) {
-        disbleButton(true)
-        console.log('rst4 was clicked');
-        post_json(ip + '/relay_rst', { UUID: device_id, CH: 3, MODE: 0 });
-      }
-    });
-
-    rst5.addEventListener('click', function (e) {
-      if (!resetChecking(r5)) {
-        disbleButton(true)
-        console.log('rst5 was clicked');
-        post_json(ip + '/relay_rst', { UUID: device_id, CH: 4, MODE: 0 });
-      }
-    });
-
-    rst6.addEventListener('click', function (e) {
-      if (!resetChecking(r6)) {
-        disbleButton(true)
-        console.log('rst6 was clicked');
-        post_json(ip + '/relay_rst', { UUID: device_id, CH: 5, MODE: 0 });
-      }
-    });
-
-    rst7.addEventListener('click', function (e) {
-      if (!resetChecking(r7)) {
-        disbleButton(true)
-        console.log('rst7 was clicked');
-        post_json(ip + '/relay_rst', { UUID: device_id, CH: 6, MODE: 0 });
-      }
-    });
-
-    rst8.addEventListener('click', function (e) {
-      if (!resetChecking(r8)) {
-        disbleButton(true)
-        console.log('rst8 was clicked');
-        post_json(ip + '/relay_rst', { UUID: device_id, CH: 7, MODE: 0 });
-      }
-    });
-
-    r_on.addEventListener('click', function (e) {
-      disbleButton(true)
-      console.log('r_on was clicked');
-      post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 0xFF, MODE: 1 });
-    });
-
-    r_off.addEventListener('click', function (e) {
-      disbleButton(true)
-      console.log('r_off was clicked');
-      post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 0x01, MODE: 1 });
-    });
-
-    var BreakException = {};
-    r_rst.addEventListener('click', function (e) {
-
-      buttonAllReset.forEach(btn=>{
-        if(!resetChecking(btn)) {
-             disbleButton(true)
-             isReset = true;
-             console.log('rst_ was clicked');
-             post_json(ip + '/relay_rst', { UUID: device_id, CH: 0x1, MODE: 1 });
-             throw BreakException;
+      function resetChecking(r_btn) {
+        if (r_btn.className == "button off") {
+          warning_text.innerText = "Reset denied";
+          return 1;
+        }
+        else if (r_btn.className == "button on") {
+          isReset = true;
+          return 0;
         }
 
-      })
-    });
+      }
 
-    var btn_cd = 0;
+      /*  r1.addEventListener('click', function (e) {
+         disbleButton(true)
+         console.log('r1 was clicked');
+         post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 0, MODE: 0 });
+       }); */
+
+      r2.addEventListener('click', function (e) {
+        disbleButton(true)
+        console.log('r2 was clicked');
+        post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 1, MODE: 0 });
+      });
+
+      r3.addEventListener('click', function (e) {
+        disbleButton(true)
+        console.log('r3 was clicked');
+        post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 2, MODE: 0 });
+      });
+
+      r4.addEventListener('click', function (e) {
+        disbleButton(true)
+        console.log('r4 was clicked');
+        post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 3, MODE: 0 });
+      });
+
+      r5.addEventListener('click', function (e) {
+        disbleButton(true)
+        console.log('r5 was clicked');
+        post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 4, MODE: 0 });
+      });
+
+      r6.addEventListener('click', function (e) {
+        disbleButton(true)
+        console.log('r6 was clicked');
+        post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 5, MODE: 0 });
+      });
+
+      r7.addEventListener('click', function (e) {
+        disbleButton(true)
+        console.log('r7 was clicked');
+        post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 6, MODE: 0 });
+      });
+
+      r8.addEventListener('click', function (e) {
+        disbleButton(true)
+        console.log('r8 was clicked');
+        post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 7, MODE: 0 });
+      });
+
+      /* rst1.addEventListener('click', function (e) {
+        if(!resetChecking(r1))
+        {
+        disbleButton(true)
+        console.log('rst1 was clicked');
+        post_json(ip + '/relay_rst', { UUID: device_id, CH: 0 ,MODE:0});
+        }
+      }); */
+
+      rst2.addEventListener('click', function (e) {
+        if (!resetChecking(r2)) {
+          disbleButton(true)
+          console.log('rst2 was clicked');
+          post_json(ip + '/relay_rst', { UUID: device_id, CH: 1, MODE: 0 });
+        }
+      });
+
+      rst3.addEventListener('click', function (e) {
+        if (!resetChecking(r3)) {
+          disbleButton(true)
+          console.log('rst3 was clicked');
+          post_json(ip + '/relay_rst', { UUID: device_id, CH: 2, MODE: 0 });
+        }
+      });
+
+      rst4.addEventListener('click', function (e) {
+        if (!resetChecking(r4)) {
+          disbleButton(true)
+          console.log('rst4 was clicked');
+          post_json(ip + '/relay_rst', { UUID: device_id, CH: 3, MODE: 0 });
+        }
+      });
+
+      rst5.addEventListener('click', function (e) {
+        if (!resetChecking(r5)) {
+          disbleButton(true)
+          console.log('rst5 was clicked');
+          post_json(ip + '/relay_rst', { UUID: device_id, CH: 4, MODE: 0 });
+        }
+      });
+
+      rst6.addEventListener('click', function (e) {
+        if (!resetChecking(r6)) {
+          disbleButton(true)
+          console.log('rst6 was clicked');
+          post_json(ip + '/relay_rst', { UUID: device_id, CH: 5, MODE: 0 });
+        }
+      });
+
+      rst7.addEventListener('click', function (e) {
+        if (!resetChecking(r7)) {
+          disbleButton(true)
+          console.log('rst7 was clicked');
+          post_json(ip + '/relay_rst', { UUID: device_id, CH: 6, MODE: 0 });
+        }
+      });
+
+      rst8.addEventListener('click', function (e) {
+        if (!resetChecking(r8)) {
+          disbleButton(true)
+          console.log('rst8 was clicked');
+          post_json(ip + '/relay_rst', { UUID: device_id, CH: 7, MODE: 0 });
+        }
+      });
+
+      r_on.addEventListener('click', function (e) {
+        disbleButton(true)
+        console.log('r_on was clicked');
+        post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 0xFF, MODE: 1 });
+      });
+
+      r_off.addEventListener('click', function (e) {
+        disbleButton(true)
+        console.log('r_off was clicked');
+        post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 0x01, MODE: 1 });
+      });
+
+      var BreakException = {};
+      r_rst.addEventListener('click', function (e) {
+
+        buttonAllReset.forEach(btn => {
+          if (!resetChecking(btn)) {
+            disbleButton(true)
+            isReset = true;
+            console.log('rst_ was clicked');
+            post_json(ip + '/relay_rst', { UUID: device_id, CH: 0x1, MODE: 1 });
+            throw BreakException;
+          }
+
+        })
+      });
+
+    var btn_cd = 0; //for timeout btn disable
     this.intv_pooling = setInterval(function () {
       var body = { UUID: device_id };
 
@@ -356,7 +361,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       })
         .then(res => res.json())
         .then(function handleJson(DLOGV1) {
-          
+
 
           if (!isEmptyObject(DLOGV1) && !0) {
             console.log(DLOGV1.BTN.CH0)
@@ -371,14 +376,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
               DLOGV1.RELAY.CH6,
               DLOGV1.RELAY.CH7
             ]
-            if (DLOGV1.BTN.CH0 == true){
-              if(isReset){
-              isReset = false;
-            }
-            else {
-              enableButton();
+            if (DLOGV1.BTN.CH0 == true) {
+              if (isReset) {
+                isReset = false;
+              }
+              else {
+                enableButton();
 
-            }
+              }
             }
             var i = 0;
             buttonAllR.forEach((r) => {
@@ -400,7 +405,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
               r.style.backgroundColor = "black";
               r.className = "button null";
               disbleButton(false);
-              warning_text.innerText ='';
+              warning_text.innerText = '';
             })
 
             document.getElementById('vdc1').innerText = "VDC1" + "-V";
@@ -420,12 +425,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
     }, 500);
 
-    setTimeout(function () {
-      // init 5 value of temp_graph
+    setTimeout(function () { // initial 5 value of temp_graph
       fetch(ip + '/init_temp',
         {
           method: 'POST',
-          body: JSON.stringify({ UUID: device_id }),
+          body: JSON.stringify({ UUID: device_id ,LIMIT:5}),
           headers: { 'Content-Type': 'application/json' },
         })
         .then(res => res.json())
@@ -473,7 +477,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     }, 800)
 
-    var count_update = 0;
+    var count_update = 0; //for delay time
     //temp graph update
     this.intv_graph_update = setInterval(function () {
 
@@ -493,7 +497,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         })
         .then(function (data) {
           // not include []
-          if (!isEmptyObject(data)  &&  data!=0) {
+          if (!isEmptyObject(data) && data != 0) {
 
             if (count_update == 6) // 60sec
             {
@@ -501,6 +505,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
               removeData(chart);
               count_update = 0;
             }
+            //10 sec
+            addData(chart_tmpbar, 0, data[0].mean_temp);
+            removeData(chart_tmpbar);
+
             addData(chart_tmp, 0, data[0].mean_temp);
             removeData(chart_tmp);
             /*       
@@ -508,7 +516,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         chart_tmp.options.scales.yAxes[0].ticks.max = data[0].mean_temp+0.5
                         chart_tmp.update(); */
           }
-
         });
 
       fetch(ip + '/update_vdc', {
@@ -521,7 +528,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         })
         .then(function (data) {
           // not include []
-          if (!isEmptyObject(data) && data!=0) {
+          if (!isEmptyObject(data) && data != 0) {
             addData(chart_vdc, 0, data[0].mean_volt_dc_1);
             removeData(chart_vdc);
 
@@ -529,206 +536,204 @@ export class DashboardComponent implements OnInit, OnDestroy {
           }
         });
 
-
-
-
-
     }, 10000)
 
-    //*********************GRAPH TEMP ****************************** */
-    var canvas = <HTMLCanvasElement>document.getElementById('myChart');
-    console.log("predata" + predata);
-    var ctx = canvas.getContext('2d');
-    /* var predata = [24.2, 24.1, 26.0, 25.2, 25.5]; */
-    var chart = new Chart(ctx, {
-      type: 'line',
-      // The data for our dataset
-      data: {
-        labels: ["-4m", "-3m", "-2m", "-1m", "now",],
-        datasets: [{
-          label: "TEMP(1m)",
-          backgroundColor: 'orange',
-          borderColor: 'red',
-          data: predata,
-          spanGaps: false,
-          lineTension: 0,
 
-        }]
-      },
+  //++++GRAPH CONFIG++++
+      //*********************GRAPH TEMP ****************************** */
+      var canvas = <HTMLCanvasElement>document.getElementById('myChart');
+      console.log("predata" + predata);
+      var ctx = canvas.getContext('2d');
+      /* var predata = [24.2, 24.1, 26.0, 25.2, 25.5]; */
+      var chart = new Chart(ctx, {
+        type: 'line',
+        // The data for our dataset
+        data: {
+          labels: ["-4m", "-3m", "-2m", "-1m", "now",],
+          datasets: [{
+            label: "TEMP(1m)",
+            backgroundColor: 'orange',
+            borderColor: 'red',
+            data: predata,
+            spanGaps: false,
+            lineTension: 0,
 
-      // Configuration options go here
-      options: {
-        responsive: true,
-        scales: {
-          yAxes: [{
-            ticks: {
-              min: 23,
-              max: 29,
-              stepSize: 0.5,
-              /*  min: Math.min.apply(this, predata.values[0]) - 3,
-              max: Math.max.apply(this, predata.values[0]) + 3, */
-            },/* suggestedMin: 0.5, suggestedMax: 5.5 */
-          }],
-          xAxes: [{
-            scaleLabel: {
-              display: true,
-              labelString: "Time in Minute",
-              fontColor: "black"
-            }
           }]
-
         },
-        animation: {
-          duration: 0, // general animation time
+
+        // Configuration options go here
+        options: {
+          responsive: true,
+          scales: {
+            yAxes: [{
+              ticks: {
+                min: 23,
+                max: 29,
+                stepSize: 0.5,
+                /*  min: Math.min.apply(this, predata.values[0]) - 3,
+                max: Math.max.apply(this, predata.values[0]) + 3, */
+              },/* suggestedMin: 0.5, suggestedMax: 5.5 */
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: "Time in Minute",
+                fontColor: "black"
+              }
+            }]
+
+          },
+          animation: {
+            duration: 0, // general animation time
+          },
+          hover: {
+            animationDuration: 0, // duration of animations when hovering an item
+          },
+          responsiveAnimationDuration: 0, // animation duration after a resize
+        }
+      });
+
+
+
+
+      //*********************GRAPH TEMP BIGSIZE ****************************** */
+      var canvas = <HTMLCanvasElement>document.getElementById('myChart_tmp');
+
+      var ctx = canvas.getContext('2d');
+      /* var predata = [24.2, 24.1, 26.0, 25.2, 25.5]; */
+      /* var predata_vdc = [12.9, 13.0, 12.6, 12.4, 13] */
+      var chart_tmp = new Chart(ctx, {
+        type: 'line',
+        // The data for our dataset
+        data: {
+          labels: ["-40s", "-30s", "-20s", "-10s", "now",],
+          datasets: [{
+            label: "TEMP(10s)",
+            backgroundColor: 'orange',
+            borderColor: 'red',
+            data: predata,
+            spanGaps: false,
+            lineTension: 0,
+
+          }]
         },
-        hover: {
-          animationDuration: 0, // duration of animations when hovering an item
-        },
-        responsiveAnimationDuration: 0, // animation duration after a resize
-      }
-    });
 
-    //*********************GRAPH TEMP BIGSIZE ****************************** */
-    var canvas = <HTMLCanvasElement>document.getElementById('myChart_tmp');
-
-    var ctx = canvas.getContext('2d');
-    /* var predata = [24.2, 24.1, 26.0, 25.2, 25.5]; */
-    /* var predata_vdc = [12.9, 13.0, 12.6, 12.4, 13] */
-    var chart_tmp = new Chart(ctx, {
-      type: 'line',
-      // The data for our dataset
-      data: {
-        labels: ["-40s", "-30s", "-20s", "-10s", "now",],
-        datasets: [{
-          label: "TEMP(10s)",
-          backgroundColor: 'orange',
-          borderColor: 'red',
-          data: predata,
-          spanGaps: false,
-          lineTension: 0,
-
-        }]
-      },
-
-      // Configuration options go here
-      options: {
-        responsive: true,
-        scales: {
-          yAxes: [{
-            ticks: { /* min: 23,
+        // Configuration options go here
+        options: {
+          responsive: true,
+          scales: {
+            yAxes: [{
+              ticks: { /* min: 23,
                max: 29,
                */
-            },
-          }],
-          xAxes: [{
-            scaleLabel: {
-              display: true,
-              labelString: "Time in sec",
-              fontColor: "black"
-            }
+              },
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: "Time in sec",
+                fontColor: "black"
+              }
+            }]
+          },
+        }
+      });
+
+
+      //*********************GRAPH V DC ****************************** */
+      var canvas = <HTMLCanvasElement>document.getElementById('myChart_vdc');
+
+      var ctx = canvas.getContext('2d');
+      /* var predata = [24.2, 24.1, 26.0, 25.2, 25.5]; */
+      /* var predata_vdc = [12.9, 13.0, 12.6, 12.4, 13] */
+      var chart_vdc = new Chart(ctx, {
+        type: 'line',
+        // The data for our dataset
+        data: {
+          labels: ["-5m", "-4m", "-3m", "-2m", "-1m",],
+          datasets: [{
+            label: "VDC",
+            /* backgroundColor: 'orange' ,*/
+            borderColor: 'yellow',
+            data: predata_vdc,
+            spanGaps: false,
+            lineTension: 0,
+
           }]
         },
-      }
-    });
 
-    //*********************GRAPH V DC ****************************** */
-    var canvas = <HTMLCanvasElement>document.getElementById('myChart_vdc');
-
-    var ctx = canvas.getContext('2d');
-    /* var predata = [24.2, 24.1, 26.0, 25.2, 25.5]; */
-    /* var predata_vdc = [12.9, 13.0, 12.6, 12.4, 13] */
-    var chart_vdc = new Chart(ctx, {
-      type: 'line',
-      // The data for our dataset
-      data: {
-        labels: ["-5m", "-4m", "-3m", "-2m", "-1m",],
-        datasets: [{
-          label: "VDC",
-          /* backgroundColor: 'orange' ,*/
-          borderColor: 'yellow',
-          data: predata_vdc,
-          spanGaps: false,
-          lineTension: 0,
-
-        }]
-      },
-
-      // Configuration options go here
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          yAxes: [{
-            ticks: { /* min: 10,
+        // Configuration options go here
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            yAxes: [{
+              ticks: { /* min: 10,
                max: 13, */
-            },
-          }],
-          xAxes: [{
-            scaleLabel: {
-              display: true,
-              labelString: "Time in Minute",
-              fontColor: "black"
-            }
-          }]
+              },
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: "Time in Minute",
+                fontColor: "black"
+              }
+            }]
 
+          },
+
+        }
+      });
+
+
+      //-------------------------------------
+      //** tempbar */
+      var canvas = <HTMLCanvasElement>document.getElementById('Chart_tempbar');
+
+      var ctx = canvas.getContext('2d');
+      /* var predata = [24.2, 24.1, 26.0, 25.2, 25.5]; */
+      /* var predata_vdc = [12.9, 13.0, 12.6, 12.4, 13] */
+      var chart_tmpbar = new Chart(ctx, {
+        type: 'bar',
+        // The data for our dataset
+        data: {
+          labels: ["NOW"],
+          datasets: [{
+            label: "temp",
+            /* backgroundColor: 'orange' ,*/
+            /*  borderColor: 'black', */
+            /*  backgroundColor: 'green', */
+            data: predata_tmpbar,
+            spanGaps: false,
+            lineTension: 0,
+
+          }]
         },
 
-      }
-    });
+        // Configuration options go here
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            yAxes: [{
+              ticks: {
+                min: 20,
+                max: 60,
+              },
+            }],
+            xAxes: [{
+              scaleLabel: {
+                display: true,
+                fontColor: "black"
+              }
+            }]
 
+          },
 
-    //-------------------------------------
-    //** tempbar */
-    var canvas = <HTMLCanvasElement>document.getElementById('Chart_tempbar');
+        }
+      });
 
-    var ctx = canvas.getContext('2d');
-    /* var predata = [24.2, 24.1, 26.0, 25.2, 25.5]; */
-    /* var predata_vdc = [12.9, 13.0, 12.6, 12.4, 13] */
-    var chart_tmpbar = new Chart(ctx, {
-      type: 'bar',
-      // The data for our dataset
-      data: {
-        labels: ["NOW"],
-        datasets: [{
-          label: "temp",
-          /* backgroundColor: 'orange' ,*/
-          /*  borderColor: 'black', */
-          /*  backgroundColor: 'green', */
-          data: predata_tmpbar,
-          spanGaps: false,
-          lineTension: 0,
-
-        }]
-      },
-
-      // Configuration options go here
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          yAxes: [{
-            ticks: {
-              min: 20,
-              max: 60,
-            },
-          }],
-          xAxes: [{
-            scaleLabel: {
-              display: true,
-              fontColor: "black"
-            }
-          }]
-
-        },
-
-      }
-    });
-
-
-
-    //***************************/
-    //**** FUNCTION(ngOninit)****/
-    //****************************/
+   
 
 
     function post_json(path, body) {
@@ -782,7 +787,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
       chart_tmpbar.update();
     }
+
   }
+
   ngOnDestroy() {
     if (this.intv_pooling)
       clearInterval(this.intv_pooling);
@@ -791,10 +798,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   }
 
-  a
-
-  /* ********circle graph********* */
-  canvas: any;
-  ctx: any;
 }
 

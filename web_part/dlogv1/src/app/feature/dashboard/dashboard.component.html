@@ -3,16 +3,33 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
 <div class="topnav" id="myTopnav">
+    <div class="col">
+        <div ngbDropdown class="d-inline-block">
+          <button class="btn btn-outline-primary" style="color: rgb(236, 159, 159); background: blue;" id='dropdown1'ngbDropdownToggle>
+            <strong>DLOG</strong>
+          </button>
+          <div  ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <option class="dropdown-item" value="0">dlog1</option>
+            <option class="dropdown-item" value="1">dlog2</option>
+            <option class="dropdown-item"value="2">dlog3</option>
+          </div>
+        </div>
+      </div>
   <li style="float:left">
 
-    <select id="selector1" style="font-size: 50px">
 
+    
+    <!-- <ngb-pagination [collectionSize]="100" [(page)]="page" [boundaryLinks]="false"></ngb-pagination> <pre>Current page: {{page}}</pre>
+       -->
+
+    <select id="selector1" style="font-size: 50px">
       <option value="0">dlog1</option>
       <option value="1">dlog2</option>
       <option value="2">dlog3</option>
       <option value="3">dlog4</option>
 
     </select>
+
   </li>
   <label id="dlog_show"> </label>
   <label style="color:black"> STATUS : </label>
@@ -24,6 +41,7 @@
 </div>
 <div class="container">
 
+
   <div class="container-1">
     <label>RELAY COnfig</label>
     <label class="warning_text" id="warning_text"> </label>
@@ -32,11 +50,11 @@
       <br>
 
       <div id='bg_rst1' class="buttonHolder-rst">
-        <button id='rst1' class="button-rst restart" ></button>
+        <button id='rst1' class="button-rst restart"></button>
         <br>
       </div>
-      <div id='bg_r1' class="buttonHolder" >
-        <button id='r1' class="button on" ></button>
+      <div id='bg_r1' class="buttonHolder">
+        <button id='r1' class="button on"></button>
       </div>
 
     </div>
@@ -145,40 +163,42 @@
   </div>
 
   <div class="container-2">
-  
+
     <img src="../../../assets/images/temp.png" style="width:120px;height:120px;">
 
     <label id="temp" style="position:absolute; font-size: 50px"></label>
 
 
     <canvas style="position: absolute;;left :0px;top: 100px;" id="myChart" width="150" height="150"></canvas>
-    
+
 
   </div>
 
   <div class="container-3">
 
-    
+
     <canvas style="position: absolute;;left :0px;top: 20px;" id="myChart_tmp" width="80" height="50"></canvas>
     <button id="tmpbar_test">CLICK</button>
   </div>
 
-  <div class="container_tempbar">  <canvas style="position: absolute;" id="Chart_tempbar"></canvas></div>
+  <div class="container_tempbar">
+    <canvas style="position: absolute;" id="Chart_tempbar"></canvas>
+  </div>
 
   <div class="container-4">
 
-    <label id="vdc1"> </label> 
+    <label id="vdc1"> </label>
     <br>
-    <label id="vdc2"></label> 
+    <label id="vdc2"></label>
     <br>
     <label id="vac1"> </label>
     <br>
     <div class="chart-container" style="position:absolute;height:300px;width:800px;background-color: rgb(223, 142, 142)">
       <canvas style="position: absolute;" id="myChart_vdc"></canvas>
 
-    
+
+    </div>
+
+
+
   </div>
-  
-
-
-</div>

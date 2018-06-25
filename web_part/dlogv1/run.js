@@ -253,7 +253,7 @@ app.post('/init_temp', (req, res) => {
 
 			/* var id = `'123456789012345'`  */
 			var tmp = `
-			SELECT mean("temp") AS "mean_temp" FROM "tc_datalogger"."autogen"."dlog" WHERE time > now() - 15mAND "id"=`+ buf + ` GROUP BY time(1m) FILL(null) limit 5
+			SELECT mean("temp") AS "mean_temp" FROM "tc_datalogger"."autogen"."dlog" WHERE time > now() - 15mAND "id"=`+ buf + ` GROUP BY time(1m) FILL(null) limit `+ buf_lim + `
 			`
 
 			client_inf.query(tmp)
