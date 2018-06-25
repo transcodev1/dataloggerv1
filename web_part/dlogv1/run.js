@@ -79,7 +79,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('port', 3000);
 
-app.get('/', function (req, res) {
+app.get('*', function (req, res) {
 	res.sendFile(path.join(__dirname, '/src/index.html'));
 })
 

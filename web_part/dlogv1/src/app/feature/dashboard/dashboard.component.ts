@@ -29,7 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     /*  var ip = 'http://192.168.64.1:80' */
     /* var ip = 'http://192.168.64.1' */
     /* ################################################### */
-
+    var isReset = false;
     var btn_cd_max = 20  // 10 sec
     var global_index = 0;
     var predata = []
@@ -40,7 +40,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     var device_id = 12345678
     var device_uuid = []
 
-    fetch(ip + '/get_id', {
+    fetch(ip + '/api/get_id', {
     })
       .then(res => res.json())
       .then(function handleJson(id_login) {
@@ -50,9 +50,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           device_uuid.push(id)
         })
         device_id = device_uuid[global_index]
-
-        console.log("get id here")
-        console.log(id_login)
 
       })
 
@@ -119,8 +116,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
         )
 
-
+       /*  enableButton(); */
       device_select = (<HTMLInputElement>document.getElementById('selector1')).value;
+      selector1.disabled = false;
 
     });
 
@@ -157,12 +155,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     const button_id = [];
     const buttonAllR = [];
-
+    const buttonAllReset =[];
     button_id.push(r1, r2, r3, r4, r5, r6, r7, r8, rst1, rst2, rst3, rst4, rst5, rst6, rst7, rst8, r_on, r_off, r_rst)
     buttonAllR.push(r1, r2, r3, r4, r5, r6, r7, r8)
-    function disbleButton() {
+    buttonAllReset.push( rst1, rst2, rst3, rst4, rst5, rst6, rst7, rst8)
+
+    function disbleButton(disableSelector) {
       button_id.forEach((btn) => {
         btn.disabled = true;
+        disableSelector?selector1.disabled = true:selector1.disabled = false;
         warning_text.innerText = "Loading...";
       })
     }
@@ -170,7 +171,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
       button_id.forEach((btn) => {
         btn.disabled = false;
+        selector1.disabled = false;
         warning_text.innerText = "";
+       
       })
     }
     function resetChecking(r_btn) {
@@ -178,54 +181,57 @@ export class DashboardComponent implements OnInit, OnDestroy {
         warning_text.innerText = "Reset denied";
         return 1;
       }
-      else if (r_btn.className == "button on")
-        return 0;
+      else if (r_btn.className == "button on"){
+      isReset = true;
+      return 0;
+    }
+        
     }
 
     /*  r1.addEventListener('click', function (e) {
-       disbleButton()
+       disbleButton(true)
        console.log('r1 was clicked');
        post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 0, MODE: 0 });
      }); */
 
     r2.addEventListener('click', function (e) {
-      disbleButton()
+      disbleButton(true)
       console.log('r2 was clicked');
       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 1, MODE: 0 });
     });
 
     r3.addEventListener('click', function (e) {
-      disbleButton()
+      disbleButton(true)
       console.log('r3 was clicked');
       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 2, MODE: 0 });
     });
 
     r4.addEventListener('click', function (e) {
-      disbleButton()
+      disbleButton(true)
       console.log('r4 was clicked');
       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 3, MODE: 0 });
     });
 
     r5.addEventListener('click', function (e) {
-      disbleButton()
+      disbleButton(true)
       console.log('r5 was clicked');
       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 4, MODE: 0 });
     });
 
     r6.addEventListener('click', function (e) {
-      disbleButton()
+      disbleButton(true)
       console.log('r6 was clicked');
       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 5, MODE: 0 });
     });
 
     r7.addEventListener('click', function (e) {
-      disbleButton()
+      disbleButton(true)
       console.log('r7 was clicked');
       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 6, MODE: 0 });
     });
 
     r8.addEventListener('click', function (e) {
-      disbleButton()
+      disbleButton(true)
       console.log('r8 was clicked');
       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 7, MODE: 0 });
     });
@@ -233,7 +239,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     /* rst1.addEventListener('click', function (e) {
       if(!resetChecking(r1))
       {
-      disbleButton()
+      disbleButton(true)
       console.log('rst1 was clicked');
       post_json(ip + '/relay_rst', { UUID: device_id, CH: 0 ,MODE:0});
       }
@@ -241,7 +247,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     rst2.addEventListener('click', function (e) {
       if (!resetChecking(r2)) {
-        disbleButton()
+        disbleButton(true)
         console.log('rst2 was clicked');
         post_json(ip + '/relay_rst', { UUID: device_id, CH: 1, MODE: 0 });
       }
@@ -249,7 +255,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     rst3.addEventListener('click', function (e) {
       if (!resetChecking(r3)) {
-        disbleButton()
+        disbleButton(true)
         console.log('rst3 was clicked');
         post_json(ip + '/relay_rst', { UUID: device_id, CH: 2, MODE: 0 });
       }
@@ -257,7 +263,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     rst4.addEventListener('click', function (e) {
       if (!resetChecking(r4)) {
-        disbleButton()
+        disbleButton(true)
         console.log('rst4 was clicked');
         post_json(ip + '/relay_rst', { UUID: device_id, CH: 3, MODE: 0 });
       }
@@ -265,7 +271,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     rst5.addEventListener('click', function (e) {
       if (!resetChecking(r5)) {
-        disbleButton()
+        disbleButton(true)
         console.log('rst5 was clicked');
         post_json(ip + '/relay_rst', { UUID: device_id, CH: 4, MODE: 0 });
       }
@@ -273,7 +279,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     rst6.addEventListener('click', function (e) {
       if (!resetChecking(r6)) {
-        disbleButton()
+        disbleButton(true)
         console.log('rst6 was clicked');
         post_json(ip + '/relay_rst', { UUID: device_id, CH: 5, MODE: 0 });
       }
@@ -281,7 +287,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     rst7.addEventListener('click', function (e) {
       if (!resetChecking(r7)) {
-        disbleButton()
+        disbleButton(true)
         console.log('rst7 was clicked');
         post_json(ip + '/relay_rst', { UUID: device_id, CH: 6, MODE: 0 });
       }
@@ -289,27 +295,37 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     rst8.addEventListener('click', function (e) {
       if (!resetChecking(r8)) {
-        disbleButton()
+        disbleButton(true)
         console.log('rst8 was clicked');
         post_json(ip + '/relay_rst', { UUID: device_id, CH: 7, MODE: 0 });
       }
     });
 
     r_on.addEventListener('click', function (e) {
-      disbleButton()
+      disbleButton(true)
       console.log('r_on was clicked');
       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 0xFF, MODE: 1 });
     });
 
     r_off.addEventListener('click', function (e) {
-      disbleButton()
+      disbleButton(true)
       console.log('r_off was clicked');
       post_json(ip + '/relay_ctrl', { UUID: device_id, CH: 0x01, MODE: 1 });
     });
+
+    var BreakException = {};
     r_rst.addEventListener('click', function (e) {
-      disbleButton()
-      console.log('r_off was clicked');
-      post_json(ip + '/relay_rst', { UUID: device_id, CH: 0x1, MODE: 1 });
+
+      buttonAllReset.forEach(btn=>{
+        if(!resetChecking(btn)) {
+             disbleButton(true)
+             isReset = true;
+             console.log('rst_ was clicked');
+             post_json(ip + '/relay_rst', { UUID: device_id, CH: 0x1, MODE: 1 });
+             throw BreakException;
+        }
+
+      })
     });
 
     var btn_cd = 0;
@@ -355,11 +371,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
               DLOGV1.RELAY.CH6,
               DLOGV1.RELAY.CH7
             ]
-
-
-            if (DLOGV1.BTN.CH0 == true)
+            if (DLOGV1.BTN.CH0 == true){
+              if(isReset){
+              isReset = false;
+            }
+            else {
               enableButton();
 
+            }
+            }
             var i = 0;
             buttonAllR.forEach((r) => {
               r.style.backgroundColor = ((DLOGAllRelay[i] == 1) ? "green" : "red");
@@ -379,6 +399,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
             buttonAllR.forEach((r) => {
               r.style.backgroundColor = "black";
               r.className = "button null";
+              disbleButton(false);
+              warning_text.innerText ='';
             })
 
             document.getElementById('vdc1').innerText = "VDC1" + "-V";
@@ -471,7 +493,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         })
         .then(function (data) {
           // not include []
-          if (!isEmptyObject(data)) {
+          if (!isEmptyObject(data)  &&  data!=0) {
 
             if (count_update == 6) // 60sec
             {
@@ -499,7 +521,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         })
         .then(function (data) {
           // not include []
-          if (!isEmptyObject(data)) {
+          if (!isEmptyObject(data) && data!=0) {
             addData(chart_vdc, 0, data[0].mean_volt_dc_1);
             removeData(chart_vdc);
 
